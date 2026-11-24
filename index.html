@@ -1,5 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>PPCs do CT · Tramitação</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%228 2 48 60%22%3E%3Cpath d=%22M12 10 L21 18 Q32 12 43 18 L52 10 L50.5 27 Q54 35 52 45 Q48 58 32 58 Q16 58 12 45 Q10 35 13.5 27 Z%22 fill=%22%23fdf3dc%22 stroke=%22%23283E4C%22 stroke-width=%222.2%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M14.5 34 Q10.5 42 16.5 51%22 fill=%22none%22 stroke=%22%23283E4C%22 stroke-width=%222%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M49.5 34 Q53.5 42 47.5 51%22 fill=%22none%22 stroke=%22%23283E4C%22 stroke-width=%222%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M24 45 q2 2 4 0 q2 2 4 0 q2 2 4 0 q2 2 4 0%22 fill=%22none%22 stroke=%22%23c9a14a%22 stroke-width=%221.5%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M27 50.5 q2 2 4 0 q2 2 4 0 q2 2 4 0%22 fill=%22none%22 stroke=%22%23c9a14a%22 stroke-width=%221.5%22 stroke-linecap=%22round%22/%3E%3Cpath d=%22M26 58 l-2 3 M28.5 58 v3 M35.5 58 v3 M38 58 l2 3%22 stroke=%22%23e0a526%22 stroke-width=%222%22 stroke-linecap=%22round%22/%3E%3Ccircle cx=%2224.5%22 cy=%2229%22 r=%227.2%22 fill=%22%23ffffff%22 stroke=%22%23283E4C%22 stroke-width=%222%22/%3E%3Ccircle cx=%2239.5%22 cy=%2229%22 r=%227.2%22 fill=%22%23ffffff%22 stroke=%22%23283E4C%22 stroke-width=%222%22/%3E%3Ccircle cx=%2225.2%22 cy=%2229.5%22 r=%223%22 fill=%22%23283E4C%22/%3E%3Ccircle cx=%2240.2%22 cy=%2229.5%22 r=%223%22 fill=%22%23283E4C%22/%3E%3Ccircle cx=%2226.2%22 cy=%2228.4%22 r=%221%22 fill=%22%23ffffff%22/%3E%3Ccircle cx=%2241.2%22 cy=%2228.4%22 r=%221%22 fill=%22%23ffffff%22/%3E%3Cpath d=%22M29.5 35 L32 40 L34.5 35 Z%22 fill=%22%23e0a526%22 stroke=%22%23283E4C%22 stroke-width=%221.2%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%2224.5%22 cy=%2229%22 r=%229%22 fill=%22none%22 stroke=%22%23283E4C%22 stroke-width=%222.4%22/%3E%3Ccircle cx=%2239.5%22 cy=%2229%22 r=%229%22 fill=%22none%22 stroke=%22%23283E4C%22 stroke-width=%222.4%22/%3E%3C/svg%3E">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap">
@@ -79,6 +80,7 @@ body.recolhido .item span,body.recolhido .lateral .rot,body.recolhido .rodape-la
 /* ── Conteúdo ── */
 .conteudo{padding-block:28px 40px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));max-width:1240px}
 .secao{display:flex;flex-direction:column;gap:22px}
+.secao+.secao{margin-top:56px;padding-top:40px;border-top:1px solid var(--borda)}
 .cab{display:flex;align-items:baseline;gap:12px}
 .cab .n{font-size:22px;font-weight:600;color:var(--terracota);line-height:1.2}
 .cab h2{font-size:22px;line-height:1.2}
@@ -253,7 +255,7 @@ table.q td.n,table.q th.n{text-align:right;font-variant-numeric:tabular-nums}
                 <div class="owlbox ob-blue"><div class="owl" data-owl="2"></div><div class="t"><span class="h">Leitura do recorte</span><span id="leituraPan"></span></div></div>
       </section>
 
-      <section class="secao" id="fluxo" hidden>
+      <section class="secao" id="fluxo">
         <div class="cab"><span class="n">2</span><h2>Onde cada curso está no fluxo do Manual</h2></div>
         <p class="kicker">As 10 etapas do Manual de Elaboração e Atualização de PPC (CCA/PRG, 2025) e a posição de cada processo.</p>
         <div class="leg"><span><span class="dot ok"></span>Etapa cumprida</span><span><span class="dot at"></span>Etapa atual</span><span><span class="dot pa"></span>Etapa atual, parada há mais de 180 dias</span><span><span class="dot"></span>A cumprir</span></div>
@@ -263,14 +265,14 @@ table.q td.n,table.q th.n{text-align:right;font-variant-numeric:tabular-nums}
         <div class="owlbox ob-amber"><div class="owl" data-owl="2"></div><div class="t"><span class="h">O que se destaca</span><span id="leituraFluxo"></span></div></div>
       </section>
 
-      <section class="secao" id="cursos" hidden>
+      <section class="secao" id="cursos">
         <div class="cab"><span class="n">3</span><h2>Infográfico por curso</h2></div>
         <p class="kicker">A trajetória de cada processo: setores por onde passou, quanto tempo ficou em cada um e que documentos entraram.</p>
         <div class="picker" id="picker"></div>
         <div class="cartao" id="info"></div>
       </section>
 
-      <section class="secao" id="tempos" hidden>
+      <section class="secao" id="tempos">
         <div class="cab"><span class="n">4</span><h2>Tempo por setor</h2></div>
         <p class="kicker">Quanto do tempo de cada processo ficou na coordenação, no CT, na PRG/CCA, na PROEX e no Consepe.</p>
         <div class="leg" id="legSet"></div>
@@ -288,7 +290,7 @@ table.q td.n,table.q th.n{text-align:right;font-variant-numeric:tabular-nums}
         <div class="owlbox ob-blue"><div class="owl" data-owl="2"></div><div class="t"><span class="h">Leitura do recorte</span><span id="leituraTempo"></span></div></div>
       </section>
 
-      <section class="secao" id="analise" hidden>
+      <section class="secao" id="analise">
         <div class="cab"><span class="n">5</span><h2>Gargalos e encaminhamentos</h2></div>
         <p class="kicker">O que a tramitação mostra quando comparada ao fluxo do Manual, e o que a Direção pode fazer agora.</p>
         <div class="lista-achados" id="achados"></div>
@@ -297,14 +299,14 @@ table.q td.n,table.q th.n{text-align:right;font-variant-numeric:tabular-nums}
         <div class="owlbox ob-wine"><div class="owl" data-owl="4"></div><div class="t"><span class="h">Síntese</span><span id="leituraAnalise"></span></div></div>
       </section>
 
-      <section class="secao" id="metodo" hidden>
+      <section class="secao" id="metodo">
         <div class="cab"><span class="n">6</span><h2>Como ler este painel</h2></div>
         <p class="kicker">Filtrar, clicar e ordenar. Tudo o que você seleciona vale para o painel inteiro.</p>
         <div class="mapa">
           <div class="mapc"><span class="n">1</span><div><b>Filtros no topo.</b> Situação, setor atual e curso. As etiquetas mostram o que está ativo; o × remove.</div></div>
           <div class="mapc"><span class="n">2</span><div><b>Gráficos e tabelas filtram.</b> Clique numa barra ou numa linha; clique de novo para desfazer.</div></div>
           <div class="mapc"><span class="n">3</span><div><b>Infográfico por curso.</b> Escolha o curso nos botões. Passe o mouse na linha do tempo para ver datas e documentos.</div></div>
-          <div class="mapc"><span class="n">4</span><div><b>Link direto.</b> O endereço #curso-EQ, #curso-AU etc. abre o infográfico do curso.</div></div>
+          <div class="mapc"><span class="n">4</span><div><b>Página contínua.</b> O menu lateral leva ao início de cada seção, e o item ativo acompanha a rolagem. O endereço #curso-EQ, #curso-AU etc. abre direto o infográfico do curso.</div></div>
         </div>
         <div class="owlbox ob-grey"><div class="owl" data-owl="3"></div><div class="t"><span class="h">Nota de método</span>
           <b>Fonte:</b> consulta pública de processos do SIPAC/UFPB, feita em 24/11/2026, para os 8 processos em tramitação informados pela Direção. Química Industrial não tem processo; Engenharia de Materiais já tem o PPC novo em funcionamento, e o número do processo será informado pela coordenação. <b>Tempo:</b> dias corridos entre a data de envio para um setor e a data de envio para o seguinte; a última passagem conta até 24/11/2026. <b>Setores:</b> "CT/COC" reúne Secretaria e Direção do CT, os relatores do Conselho de Centro (outras coordenações do CT) e departamentos do CT; "PRG/CCA" reúne a Coordenação de Currículos Acadêmicos, o gabinete e a secretaria executiva da PRG e as coordenações Acadêmica e de Regulação e Avaliação; "Consepe" reúne a SODS e os departamentos relatores. <b>Documentos:</b> a linha do tempo mostra os documentos agrupados por data; o conteúdo de cada um não foi lido. A data da resolução é a do documento no processo. <b>Etapas:</b> classificação feita a partir dos setores e documentos, à luz do capítulo 4 do Manual CCA/PRG 2025.</div></div>
@@ -366,20 +368,29 @@ hamb.onclick=()=>{if(mobile()){document.body.classList.toggle("menu-aberto");ham
 document.getElementById("veu").onclick=()=>document.body.classList.remove("menu-aberto");
 try{if(localStorage.getItem("ct-rec")==="1")document.body.classList.add("recolhido")}catch(e){}
 let secAtual="panorama";
-function irPara(id,push){
+const SECS=[...document.querySelectorAll(".secao")];
+const desloc=()=>{const t=document.querySelector(".topo").offsetHeight,f=document.getElementById("filtros").offsetHeight;return t+f+16};
+function marcar(id){secAtual=id;document.querySelectorAll(".item").forEach(b=>b.dataset.sec===id?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"))}
+let rolando=false;
+function irPara(id,suave){
  let m=/^curso-(.+)$/.exec(id);
  if(m&&CUR.some(c=>c.sig===m[1])){F.curso=m[1];id="cursos";render()}
- if(!document.getElementById(id)||!document.getElementById(id).classList.contains("secao"))id="panorama";
- secAtual=id;
- document.querySelectorAll(".secao").forEach(s=>s.hidden=s.id!==id);
- document.querySelectorAll(".item").forEach(b=>b.dataset.sec===id?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
- document.body.classList.remove("menu-aberto");window.scrollTo({top:0});
+ const sec=document.getElementById(id);
+ if(!sec||!sec.classList.contains("secao"))id="panorama";
+ const alvo=document.getElementById(id).querySelector(".cab")||document.getElementById(id);
+ document.body.classList.remove("menu-aberto");marcar(id);
+ const y=id==="panorama"?0:alvo.getBoundingClientRect().top+window.scrollY-desloc();
+ rolando=true;window.scrollTo({top:Math.max(0,y),behavior:suave?"smooth":"auto"});setTimeout(()=>rolando=false,suave?900:50);
  const h=id==="cursos"&&F.curso?"curso-"+F.curso:id;
  try{history.replaceState(null,"","#"+h)}catch(e){}
- requestAnimationFrame(()=>{Object.values(charts).forEach(c=>{c.resize();c.update("none")});if(id==="cursos")desenharTL()});
 }
-document.querySelectorAll(".item").forEach(b=>b.onclick=()=>irPara(b.dataset.sec));
-window.addEventListener("hashchange",()=>irPara(location.hash.slice(1)));
+document.querySelectorAll(".item").forEach(b=>b.onclick=()=>irPara(b.dataset.sec,true));
+window.addEventListener("hashchange",()=>irPara(location.hash.slice(1),true));
+/* o menu acompanha a rolagem */
+window.addEventListener("scroll",()=>{if(rolando)return;const lim=desloc()+60;let at=SECS[0].id;
+ SECS.forEach(sc=>{if(sc.getBoundingClientRect().top<=lim)at=sc.id});
+ if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4)at=SECS[SECS.length-1].id;
+ if(at!==secAtual)marcar(at)},{passive:true});
 
 /* Chart.js */
 Chart.defaults.font.family='"Source Sans 3","Segoe UI",Arial,sans-serif';Chart.defaults.font.size=13;Chart.defaults.color=C.tx;Chart.defaults.locale="pt-BR";Chart.defaults.animation=false;
@@ -442,7 +453,7 @@ function render(){
  document.getElementById("contaTab").textContent=tp.length+" cursos · clique numa linha para abrir o infográfico";
  document.getElementById("tPan").innerHTML=cab([{k:"curso",t:"Curso"},{k:"proc",t:"Processo"},{k:"aut",t:"Autuação"},{k:"etapa",t:"Etapa",n:1},{k:"setorN",t:"Onde está"},{k:"dias_atual",t:"Dias no setor",n:1},{k:"total",t:"Idade (dias)",n:1},{k:"sit",t:"Situação"}],ordem.pan,"pan")+
   "<tbody>"+tp.map(r=>`<tr class="clicavel ${F.curso===r.sig?"sel":""}" data-sig="${r.sig}"><td class="a">${esc(r.curso)}</td><td>${r.proc||(r.status==="VIGENTE"?"<span class=\"mini\">a informar</span>":"–")}</td><td>${r.aut?br(r.aut):"–"}</td><td class="n">${r.etapa} de 10</td><td>${esc(r.setorN)}</td><td class="n">${r.status==="ATIVO"?(r.dias_atual>180?`<span class="pill p-vi">${fmt(r.dias_atual)}</span>`:fmt(r.dias_atual)):"–"}</td><td class="n">${r.total?fmt(r.total):"–"}</td><td><span class="pill ${SITP[r.sit]}">${SITCURTO[r.sit]}</span></td></tr>`).join("")+"</tbody>";
- document.querySelectorAll("#tPan tr[data-sig]").forEach(tr=>tr.onclick=()=>{F.curso=tr.dataset.sig;render();irPara("cursos")});
+ document.querySelectorAll("#tPan tr[data-sig]").forEach(tr=>tr.onclick=()=>{F.curso=tr.dataset.sig;render();irPara("cursos",true)});
  const nAp=aprov.length;
  document.getElementById("leituraPan").innerHTML=n?`<b>${nAp} de ${n} cursos</b> do recorte já têm o PPC aprovado no Consepe`+(nAp?", mas nenhum foi implantado no SIGAA ainda":"")+". "+(trami.length?`<b>${trami.length}</b> seguem em análise ou diligência antes do Consepe. `:"")+(maisParado?`A maior espera atual é de <b>${esc(maisParado.curso)}</b>: ${fmt(maisParado.dias_atual)} dias em ${esc(SETN[maisParado.atual])}.`:""):"Nenhum curso atende a esta combinação de filtros. Remova uma das etiquetas acima.";
 
@@ -450,7 +461,7 @@ function render(){
  let mh='<div class="mh">Curso</div>'+ETAPAS.map((e,i)=>`<div class="mh" title="${esc(e[1])}">${i+1}<small>${e[0]}</small></div>`).join("");
  mh+=rows.map(r=>`<div class="mc" data-sig="${r.sig}" title="Abrir infográfico">${esc(r.curso)}</div>`+ETAPAS.map((e,i)=>{const k=i+1;let cl=k<r.etapa?"ok":(k===r.etapa?(r.status==="ATIVO"&&r.dias_atual>180?"pa":"at"):"");if(r.sig==="QI"&&k<=3)cl=k===1?"at":"";if(r.status==="VIGENTE")cl="ok";
    return `<div title="${esc(r.curso)} · etapa ${k}: ${esc(e[1])}"><span class="dot ${cl}"></span></div>`}).join("")).join("");
- const mz=document.getElementById("matriz");mz.innerHTML=mh;mz.querySelectorAll(".mc").forEach(d=>d.onclick=()=>{F.curso=d.dataset.sig;render();irPara("cursos")});
+ const mz=document.getElementById("matriz");mz.innerHTML=mh;mz.querySelectorAll(".mc").forEach(d=>d.onclick=()=>{F.curso=d.dataset.sig;render();irPara("cursos",true)});
  const porE={};rows.forEach(r=>porE[r.etapa]=(porE[r.etapa]||0)+1);
  document.getElementById("etapas").innerHTML=ETAPAS.map((e,i)=>`<div class="mapc"><span class="n">${i+1}</span><div><b>${e[0]}.</b> ${esc(e[1])}${porE[i+1]?` · <span class="pill p-tc">${porE[i+1]} curso${porE[i+1]>1?"s":""} aqui</span>`:""}</div></div>`).join("");
  document.getElementById("leituraFluxo").innerHTML=n?`No recorte, <b>${rows.filter(r=>r.etapa===9).length} cursos estão na etapa 9</b> (aprovados, aguardando o cadastro no SIGAA) e <b>${rows.filter(r=>r.etapa===5).length} na etapa 5</b>, o vaivém entre a CCA e a coordenação. Nenhum processo está parado no COC: o Conselho de Centro resolveu cada caso em 6 a 59 dias.`+(rows.some(r=>r.status==="SEM")?` ${rows.filter(r=>r.status==="SEM").map(r=>esc(r.curso)).join(" e ")} ainda não tem processo aberto.`:"")+(rows.some(r=>r.status==="VIGENTE")?` ${rows.filter(r=>r.status==="VIGENTE").map(r=>esc(r.curso)).join(" e ")} já está com o PPC novo em funcionamento.`:""):"Nenhum curso no recorte.";
@@ -459,7 +470,7 @@ function render(){
  const pk=document.getElementById("picker");
  const alvo=F.curso||(rows[0]&&rows[0].sig);
  pk.innerHTML=linhas("curso").map(r=>`<button data-sig="${r.sig}" aria-pressed="${r.sig===alvo}">${esc(r.curso)}</button>`).join("");
- pk.querySelectorAll("button").forEach(b=>b.onclick=()=>{F.curso=b.dataset.sig;render();if(secAtual==="cursos")try{history.replaceState(null,"","#curso-"+F.curso)}catch(e){}});
+ pk.querySelectorAll("button").forEach(b=>b.onclick=()=>{F.curso=b.dataset.sig;render();try{history.replaceState(null,"","#curso-"+F.curso)}catch(e){}});
  infografico(CUR.find(c=>c.sig===alvo));
 
  /* tempo por setor */
@@ -475,7 +486,7 @@ function render(){
 
  /* achados e ações */
  document.getElementById("tAcao").innerHTML=cab([{k:"c",t:"Curso"},{k:"s",t:"Situação"},{k:"a",t:"Encaminhamento"}])+"<tbody>"+rows.map(r=>`<tr class="clicavel" data-sig="${r.sig}"><td class="a">${esc(r.curso)}</td><td><span class="pill ${SITP[r.sit]}">${SITCURTO[r.sit]}</span></td><td>${esc(r.acao)}</td></tr>`).join("")+"</tbody>";
- document.querySelectorAll("#tAcao tr[data-sig]").forEach(tr=>tr.onclick=()=>{F.curso=tr.dataset.sig;render();irPara("cursos")});
+ document.querySelectorAll("#tAcao tr[data-sig]").forEach(tr=>tr.onclick=()=>{F.curso=tr.dataset.sig;render();irPara("cursos",true)});
 }
 
 /* achados (fixos, sobre os 9 processos) */
@@ -537,6 +548,7 @@ const roTL=new ResizeObserver(()=>desenharTL());roTL.observe(document.getElement
 
 render();
 irPara((location.hash||"#panorama").slice(1));
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{if(location.hash&&location.hash!=="#panorama")irPara(location.hash.slice(1))});
 }
 </script>
 
