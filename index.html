@@ -1,0 +1,543 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>PPCs do CT · Tramitação</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* Layout: barra superior petróleo fixa · menu lateral recolhível (só ícones) · barra de filtros fixa e recolhível · uma seção por vez (sem rolagem longa) */
+:root{
+  --petroleo:#283E4C; --terracota:#C6543C; --vinho:#7A2632; --cinza:#A5B1BA; --cinza-claro:#F3F3F3;
+  --texto:#1c2431; --texto-2:#3a4452; --texto-3:#5b6573;
+  --borda:#dde3ea; --linha:#e3e7ec; --grade:#E4E7EA;
+  --pastel-az:#EEF2F5; --pastel-tc:#FBF1EC; --pastel-vi:#F7ECEE;
+  --fundo:#F5F7F9; --cartao:#ffffff; --sobre-petroleo:#ffffff; --petroleo-escuro:#1f3240;
+  --fonte:"Source Sans 3","Segoe UI",Arial,sans-serif;
+  --topo:64px; --lateral:236px; --lateral-min:68px; --raio:12px;
+  --safe-t:env(safe-area-inset-top,0px);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--fundo);color:var(--texto)}
+body{font-family:var(--fonte);font-size:14px;line-height:1.45;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:var(--safe-t);z-index:60;background:var(--petroleo)}
+h1,h2,h3,h4{color:var(--petroleo);font-weight:600;line-height:1.2;margin:0;text-wrap:balance}
+h3,h4{font-weight:500}
+b,strong{color:var(--petroleo);font-weight:600}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--terracota);outline-offset:2px;border-radius:6px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
+
+/* ── Barra superior ── */
+.topo{position:sticky;top:var(--safe-t);z-index:50;height:var(--topo);background:var(--petroleo);color:var(--sobre-petroleo);
+  display:flex;align-items:center;gap:14px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hamb{width:42px;height:42px;border:0;border-radius:10px;background:transparent;color:var(--sobre-petroleo);display:grid;place-items:center;cursor:pointer}
+.hamb:hover{background:var(--petroleo-escuro)}
+.marca-ct{display:block;padding:4px 2px;border-radius:6px;flex:0 0 auto}
+.marca-ct img{height:38px;width:auto;display:block;max-width:none;opacity:.96;transition:opacity .15s}
+.marca-ct:hover img{opacity:1} .marca-ct:hover{background:var(--petroleo-escuro)}
+.titulo-rel{min-width:0;padding-left:14px;border-left:1px solid rgba(255,255,255,.28)}
+.titulo-rel h1{color:var(--sobre-petroleo);font-size:18px;font-weight:500;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.titulo-rel span{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.insta{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--sobre-petroleo);text-decoration:none;font-weight:500;font-size:13px;
+  padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.3)}
+.insta:hover{background:var(--petroleo-escuro)}
+
+/* ── Estrutura ── */
+.casca{display:flex;align-items:flex-start}
+.lateral{position:sticky;top:calc(var(--safe-t) + var(--topo));height:calc(100dvh - var(--topo) - var(--safe-t));width:var(--lateral);flex:0 0 auto;
+  background:var(--cartao);border-right:1px solid var(--borda);padding:18px 12px;display:flex;flex-direction:column;gap:4px;transition:width .2s ease;overflow:hidden;z-index:30}
+.lateral .rot{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-3);padding:0 12px 8px;white-space:nowrap}
+.item{display:flex;align-items:center;gap:14px;padding:11px 12px;border-radius:10px;color:var(--texto-2);text-decoration:none;font-weight:500;white-space:nowrap;border:0;background:none;cursor:pointer;text-align:left;width:100%}
+.item:hover{background:var(--pastel-az);color:var(--petroleo)}
+.item[aria-current="page"]{background:var(--pastel-tc);color:var(--terracota)}
+.item[aria-current="page"] .ic{stroke:var(--terracota)}
+.lateral .rodape-lat{margin-top:auto;font-size:11px;color:var(--texto-3);padding:12px;white-space:nowrap}
+body.recolhido .lateral{width:var(--lateral-min)}
+body.recolhido .item span,body.recolhido .lateral .rot,body.recolhido .rodape-lat{opacity:0;pointer-events:none}
+.principal{flex:1;min-width:0}
+
+/* ── Barra de filtros (fixa, recolhível) ── */
+.filtros{position:sticky;top:calc(var(--safe-t) + var(--topo));z-index:40;background:var(--fundo);border-bottom:1px solid var(--borda);
+  padding-block:10px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.fl-linha{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fl-bt{display:flex;align-items:center;gap:8px;border:1px solid var(--borda);background:var(--cartao);border-radius:999px;padding:6px 14px;cursor:pointer;font-weight:500;color:var(--petroleo);font-size:13px}
+.fl-bt .chev{width:16px;height:16px;transition:transform .2s}
+.fl-bt[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.fl-bt .qt{background:var(--terracota);color:#fff;border-radius:999px;font-size:11px;padding:0 7px;line-height:18px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;min-width:0}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--pastel-tc);color:#9a3a24;border:0;border-radius:999px;padding:4px 6px 4px 12px;font-size:13px;cursor:pointer}
+.chip small{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--terracota)}
+.chip .x{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:rgba(198,84,60,.14)}
+.chip .x .ic{width:12px;height:12px}
+.fl-vazio{font-size:13px;color:var(--texto-3)}
+.limpar{margin-left:auto;border:0;background:none;color:var(--vinho);font-weight:600;font-size:13px;cursor:pointer;padding:6px 4px}
+.fl-painel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 16px;padding-top:12px}
+.fl-painel label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--texto-3)}
+.fl-painel select{font:inherit;font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--texto);background:var(--cartao);border:1px solid var(--borda);border-radius:8px;padding:8px 10px}
+
+/* ── Conteúdo ── */
+.conteudo{padding-block:28px 40px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));max-width:1240px}
+.secao{display:flex;flex-direction:column;gap:22px}
+.cab{display:flex;align-items:baseline;gap:12px}
+.cab .n{font-size:22px;font-weight:600;color:var(--terracota);line-height:1.2}
+.cab h2{font-size:22px;line-height:1.2}
+.kicker{font-size:14px;color:var(--texto-2);max-width:68ch;margin:-10px 0 0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.stat{background:var(--cartao);border:1px solid var(--borda);border-left:4px solid var(--terracota);border-radius:10px;padding:14px 18px}
+.stat b{display:block;font-size:27px;line-height:1.1;font-weight:600;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--texto-2)}
+.stat.r{border-left-color:var(--vinho)} .stat.r b{color:var(--vinho)} .stat.g{border-left-color:var(--cinza)}
+.grade{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+.c7{grid-column:span 7} .c5{grid-column:span 5} .c12{grid-column:span 12}
+.cartao{background:var(--cartao);border:1px solid var(--borda);border-radius:var(--raio);padding:18px 20px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.cartao h3{font-size:18px}
+.cartao .dica{font-size:13px;color:var(--texto-3)}
+.graf{position:relative;height:270px}
+.cap{font-size:13px;color:var(--texto-3);margin:0}
+.owlbox{display:flex;gap:18px;align-items:center;border-radius:var(--raio);padding:16px 20px}
+.owlbox .t{flex:1;min-width:0;font-size:14px}
+.owlbox .h{display:block;font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
+.ob-blue{background:var(--pastel-az)} .ob-blue .h{color:var(--petroleo)}
+.ob-amber{background:var(--pastel-tc)} .ob-amber .h{color:var(--terracota)}
+.ob-wine{background:var(--pastel-vi)} .ob-wine .h{color:var(--vinho)}
+.ob-grey{background:var(--cinza-claro)} .ob-grey .h{color:var(--texto-3)}
+.owl{flex:0 0 auto;width:58px} .owl svg{width:100%;height:auto;display:block}
+
+/* ── Tabelas com cabeçalho travado ── */
+.tab-topo{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tabwrap{overflow:auto;max-height:min(58vh,520px);border:1px solid var(--borda);border-radius:10px;background:var(--cartao)}
+table.q{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;line-height:1.4}
+table.q th{position:sticky;top:0;z-index:2;background:var(--cartao);text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--texto-3);
+  padding:10px 14px;border-bottom:2px solid var(--petroleo);font-weight:600;white-space:nowrap;cursor:pointer;user-select:none}
+table.q th[aria-sort="ascending"]::after{content:" ▲";color:var(--terracota)} table.q th[aria-sort="descending"]::after{content:" ▼";color:var(--terracota)}
+table.q td{padding:10px 14px;border-bottom:1px solid var(--linha);vertical-align:top}
+table.q tbody tr:hover td{background:var(--pastel-az)}
+table.q tr.sel td{background:var(--pastel-tc)}
+table.q tr.clicavel{cursor:pointer}
+table.q td.a{font-weight:600;color:var(--petroleo)}
+table.q td.n,table.q th.n{text-align:right;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-size:11px;font-weight:600;border-radius:999px;padding:2px 10px;white-space:nowrap}
+.p-az{background:#E3E9EE;color:var(--petroleo)} .p-tc{background:#F6E0D8;color:#9a3a24} .p-vi{background:#F2DEE1;color:var(--vinho)} .p-cz{background:#EDEFF1;color:var(--texto-2)}
+.mapa{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.mapc{display:flex;gap:14px;background:var(--cartao);border:1px solid var(--borda);border-radius:10px;padding:14px 16px;font-size:14px}
+.mapc .n{font-weight:600;font-size:22px;color:var(--terracota);line-height:1}
+.selo{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--vinho);background:var(--pastel-vi);border-radius:6px;padding:2px 8px}
+.veu{display:none}
+
+@media (max-width:1000px){
+  .c7,.c5{grid-column:span 12}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .fl-painel{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:820px){
+  .lateral{position:fixed;left:0;top:calc(var(--safe-t) + var(--topo));height:calc(100dvh - var(--topo) - var(--safe-t));transform:translateX(-100%);transition:transform .2s ease;width:var(--lateral)!important;box-shadow:0 10px 30px rgba(28,36,49,.18)}
+  body.menu-aberto .lateral{transform:none}
+  body.menu-aberto .veu{display:block;position:fixed;inset:0;background:rgba(28,36,49,.35);z-index:25}
+  body.recolhido .item span,body.recolhido .lateral .rot,body.recolhido .rodape-lat{opacity:1;pointer-events:auto}
+  .titulo-rel span,.insta span{display:none}
+  .marca-ct img{height:32px}
+  .mapa{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  .stats{grid-template-columns:1fr 1fr} .stat b{font-size:22px}
+  .fl-painel{grid-template-columns:1fr}
+  .titulo-rel h1{font-size:14px}
+  .marca-ct img{height:28px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="topo">
+  <button class="hamb" id="hamb" aria-label="Recolher ou abrir o menu" aria-controls="lateral" aria-expanded="true"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <a class="marca-ct" href="https://www.ct.ufpb.br/" target="_blank" rel="noopener" title="Centro de Tecnologia da UFPB"><img src="data:image/png;base64,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" alt="Centro de Tecnologia UFPB"></a>
+  <div class="titulo-rel">
+    <h1 id="tituloRel">Atualização dos PPCs do CT</h1>
+    <span>Direção do CT · Painel interativo</span>
+  </div>
+  <a class="insta" href="https://www.instagram.com/ctufpb/" target="_blank" rel="noopener" title="Instagram do CT/UFPB">
+    <svg class="ic" viewBox="0 0 24 24"><path d="M3 8h4l2-3h6l2 3h4v12H3zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg><span>@ctufpb</span>
+  </a>
+</header>
+<style>
+/* Painel PPCs do CT · VOICE institucional, IDEA processo que anda no fluxo do Manual, PICTURE linha do tempo por setor,
+   COLOUR petróleo/terracota/vinho + tons por setor, TYPE Source Sans 3, LAYOUT casca da Direção do CT, uma seção por vez */
+:root{--s-coord:#C6543C;--s-ct:#283E4C;--s-prg:#55697A;--s-proex:#8F6410;--s-cons:#3E6B57}
+.matriz{display:grid;grid-template-columns:minmax(150px,1.4fr) repeat(10,minmax(0,1fr));gap:0;background:var(--cartao);border:1px solid var(--borda);border-radius:10px;overflow:auto}
+.matriz>div{padding:9px 6px;border-bottom:1px solid var(--linha);display:flex;align-items:center;justify-content:center;font-size:13px}
+.matriz .mh{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--texto-3);border-bottom:2px solid var(--petroleo);text-align:center;flex-direction:column;gap:2px;position:sticky;top:0;background:var(--cartao)}
+.matriz .mh small{font-size:10px;letter-spacing:0;text-transform:none;font-weight:400;line-height:1.15}
+.matriz .mc{justify-content:flex-start;font-weight:600;color:var(--petroleo);cursor:pointer;text-align:left}
+.matriz .mc:hover{color:var(--terracota)}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--cinza);background:#fff}
+.dot.ok{background:var(--petroleo);border-color:var(--petroleo)}
+.dot.at{background:var(--terracota);border-color:var(--terracota);box-shadow:0 0 0 4px var(--pastel-tc)}
+.dot.pa{background:var(--vinho);border-color:var(--vinho);box-shadow:0 0 0 4px var(--pastel-vi)}
+.leg{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--texto-2);align-items:center}
+.leg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.leg .dot{display:inline-block;width:13px;height:13px;margin-right:6px;vertical-align:-2px}
+.picker{display:flex;flex-wrap:wrap;gap:8px}
+.picker button{border:1px solid var(--borda);background:var(--cartao);border-radius:999px;padding:7px 14px;cursor:pointer;font-weight:500;font-size:13px;color:var(--petroleo)}
+.picker button[aria-pressed="true"]{background:var(--terracota);border-color:var(--terracota);color:#fff}
+.info-cab{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;justify-content:space-between;background:var(--petroleo);color:#fff;border-radius:var(--raio) var(--raio) 0 0;padding:16px 20px;margin:-18px -20px 0}
+.info-cab h3{color:#fff;font-size:22px;font-weight:600}
+.info-cab .proc{font-size:13px;opacity:.85}
+.info-cab .pill{background:#fff;color:var(--petroleo)}
+.trilho{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;margin-top:6px}
+.trilho .e{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;font-size:11px;line-height:1.2;color:var(--texto-3)}
+.trilho .e .b{height:8px;width:100%;border-radius:4px;background:var(--grade)}
+.trilho .e.ok .b{background:var(--petroleo)} .trilho .e.at .b{background:var(--terracota)} .trilho .e.pa .b{background:var(--vinho)}
+.trilho .e.at,.trilho .e.pa{color:var(--texto);font-weight:600}
+.tl{position:relative;width:100%;height:250px}
+.tl svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.barra-set{display:flex;height:34px;border-radius:8px;overflow:hidden}
+.barra-set div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;min-width:2px}
+.docs{columns:2;column-gap:28px;font-size:13px;margin:0;padding:0;list-style:none}
+.docs li{break-inside:avoid;display:flex;gap:10px;padding:5px 0;border-bottom:1px solid var(--linha)}
+.docs li b{flex:0 0 26px;height:22px;border-radius:6px;background:var(--pastel-az);display:grid;place-items:center;font-size:11px}
+.docs li span.d{flex:0 0 78px;color:var(--texto-3);font-variant-numeric:tabular-nums}
+.acao{display:flex;gap:12px;align-items:flex-start;background:var(--pastel-tc);border-radius:10px;padding:12px 16px;font-size:14px}
+.acao .ic{color:var(--terracota);margin-top:1px}
+.achado{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;background:var(--cartao);border:1px solid var(--borda);border-radius:10px;padding:14px 18px}
+.achado .n{font-size:27px;font-weight:600;color:var(--terracota);line-height:1;min-width:76px}
+.achado.r .n{color:var(--vinho)} .achado.g .n{color:var(--petroleo)}
+.achado h4{font-size:16px;margin-bottom:2px}
+.lista-achados{display:flex;flex-direction:column;gap:12px}
+.nota-of{font-size:13px;color:var(--texto-2);background:var(--cinza-claro);border-radius:10px;padding:12px 16px}
+@media (max-width:820px){.docs{columns:1}.matriz{grid-template-columns:minmax(120px,1.4fr) repeat(10,minmax(26px,1fr))}.matriz .mh small{display:none}.trilho .e span{display:none}}
+</style>
+
+<div class="casca">
+  <nav class="lateral" id="lateral" aria-label="Seções do relatório">
+    <div class="rot">Seções</div>
+    <button class="item" data-sec="panorama" title="Panorama"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg><span>Panorama</span></button>
+    <button class="item" data-sec="fluxo" title="Fluxo do Manual"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 7l-3 6a3 3 0 0 0 6 0zM19 7l-3 6a3 3 0 0 0 6 0zM8 21h8"/></svg><span>Fluxo do Manual</span></button>
+    <button class="item" data-sec="cursos" title="Infográfico por curso"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><span>Infográfico por curso</span></button>
+    <button class="item" data-sec="tempos" title="Tempo por setor"><svg class="ic" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"/></svg><span>Tempo por setor</span></button>
+    <button class="item" data-sec="analise" title="Gargalos e encaminhamentos"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.01"/></svg><span>Gargalos e encaminhamentos</span></button>
+    <button class="item" data-sec="metodo" title="Como ler"><svg class="ic" viewBox="0 0 24 24"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 11v6M12 7.5v.5"/></svg><span>Como ler</span></button>
+    <div class="rodape-lat">Atualizado em 24/11/2026</div>
+  </nav>
+  <div class="veu" id="veu"></div>
+
+  <div class="principal">
+    <div class="filtros" id="filtros">
+      <div class="fl-linha">
+        <button class="fl-bt" id="flBt" aria-expanded="true" aria-controls="flPainel">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>Filtros<span class="qt" id="flQt" hidden>0</span>
+          <svg class="ic chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="chips" id="chips" aria-live="polite"></div>
+        <button class="limpar" id="limpar" hidden>Limpar filtros</button>
+      </div>
+      <div class="fl-painel" id="flPainel"></div>
+    </div>
+
+    <main class="conteudo">
+      <section class="secao" id="panorama">
+        <div class="cab"><span class="n">1</span><h2>Panorama da atualização dos PPCs</h2></div>
+        <p class="kicker">Em que ponto está cada um dos 10 cursos de graduação do CT, segundo a tramitação no SIPAC em 24/11/2026.</p>
+        <div class="stats" id="kpis"></div>
+        <div class="cartao">
+          <h3>Cursos por situação</h3>
+          <div class="graf" style="height:230px"><canvas id="gSit" aria-label="Cursos por situação"></canvas></div>
+          <p class="cap">Clique numa barra para ver só os cursos daquela situação em todo o painel.</p>
+        </div>
+        <div class="cartao">
+          <h3>Idade de cada processo, em dias</h3>
+          <div class="graf" style="height:330px"><canvas id="gIdade" aria-label="Idade dos processos"></canvas></div>
+          <p class="cap">Dias corridos desde a autuação até 24/11/2026. A cor segue a situação. Clique num curso para filtrar.</p>
+        </div>
+        <div class="tab-topo"><h3>Situação de cada processo</h3><span class="dica" id="contaTab"></span></div>
+        <div class="tabwrap"><table class="q" id="tPan"></table></div>
+                <div class="owlbox ob-blue"><div class="owl" data-owl="2"></div><div class="t"><span class="h">Leitura do recorte</span><span id="leituraPan"></span></div></div>
+      </section>
+
+      <section class="secao" id="fluxo" hidden>
+        <div class="cab"><span class="n">2</span><h2>Onde cada curso está no fluxo do Manual</h2></div>
+        <p class="kicker">As 10 etapas do Manual de Elaboração e Atualização de PPC (CCA/PRG, 2025) e a posição de cada processo.</p>
+        <div class="leg"><span><span class="dot ok"></span>Etapa cumprida</span><span><span class="dot at"></span>Etapa atual</span><span><span class="dot pa"></span>Etapa atual, parada há mais de 180 dias</span><span><span class="dot"></span>A cumprir</span></div>
+        <div class="matriz" id="matriz"></div>
+        <p class="cap">Clique no nome do curso para abrir o infográfico dele. As etapas 5 e 6 (CCA e PROEX) admitem idas e vindas à coordenação "tantas vezes quantas forem necessárias" (nota 1 do Manual).</p>
+        <div class="mapa" id="etapas"></div>
+        <div class="owlbox ob-amber"><div class="owl" data-owl="2"></div><div class="t"><span class="h">O que se destaca</span><span id="leituraFluxo"></span></div></div>
+      </section>
+
+      <section class="secao" id="cursos" hidden>
+        <div class="cab"><span class="n">3</span><h2>Infográfico por curso</h2></div>
+        <p class="kicker">A trajetória de cada processo: setores por onde passou, quanto tempo ficou em cada um e que documentos entraram.</p>
+        <div class="picker" id="picker"></div>
+        <div class="cartao" id="info"></div>
+      </section>
+
+      <section class="secao" id="tempos" hidden>
+        <div class="cab"><span class="n">4</span><h2>Tempo por setor</h2></div>
+        <p class="kicker">Quanto do tempo de cada processo ficou na coordenação, no CT, na PRG/CCA, na PROEX e no Consepe.</p>
+        <div class="leg" id="legSet"></div>
+        <div class="cartao">
+          <h3>Dias em cada setor, por curso</h3>
+          <div class="graf" style="height:380px"><canvas id="gSet" aria-label="Dias por setor e curso"></canvas></div>
+          <p class="cap">Cada barra soma os dias corridos do processo, divididos por setor. Clique numa barra para filtrar o curso.</p>
+        </div>
+        <div class="cartao">
+          <h3>Duração média de cada passagem, por setor</h3>
+          <div class="graf" style="height:260px"><canvas id="gPass" aria-label="Duração média por passagem"></canvas></div>
+          <p class="cap">Uma passagem é cada vez que o processo entra num setor e sai dele. A passagem em curso conta até hoje.</p>
+        </div>
+        <div class="tabwrap" style="max-height:340px"><table class="q" id="tSet"></table></div>
+        <div class="owlbox ob-blue"><div class="owl" data-owl="2"></div><div class="t"><span class="h">Leitura do recorte</span><span id="leituraTempo"></span></div></div>
+      </section>
+
+      <section class="secao" id="analise" hidden>
+        <div class="cab"><span class="n">5</span><h2>Gargalos e encaminhamentos</h2></div>
+        <p class="kicker">O que a tramitação mostra quando comparada ao fluxo do Manual, e o que a Direção pode fazer agora.</p>
+        <div class="lista-achados" id="achados"></div>
+        <div class="tab-topo"><h3>Encaminhamento sugerido por curso</h3></div>
+        <div class="tabwrap"><table class="q" id="tAcao"></table></div>
+        <div class="owlbox ob-wine"><div class="owl" data-owl="4"></div><div class="t"><span class="h">Síntese</span><span id="leituraAnalise"></span></div></div>
+      </section>
+
+      <section class="secao" id="metodo" hidden>
+        <div class="cab"><span class="n">6</span><h2>Como ler este painel</h2></div>
+        <p class="kicker">Filtrar, clicar e ordenar. Tudo o que você seleciona vale para o painel inteiro.</p>
+        <div class="mapa">
+          <div class="mapc"><span class="n">1</span><div><b>Filtros no topo.</b> Situação, setor atual e curso. As etiquetas mostram o que está ativo; o × remove.</div></div>
+          <div class="mapc"><span class="n">2</span><div><b>Gráficos e tabelas filtram.</b> Clique numa barra ou numa linha; clique de novo para desfazer.</div></div>
+          <div class="mapc"><span class="n">3</span><div><b>Infográfico por curso.</b> Escolha o curso nos botões. Passe o mouse na linha do tempo para ver datas e documentos.</div></div>
+          <div class="mapc"><span class="n">4</span><div><b>Link direto.</b> O endereço #curso-EQ, #curso-AU etc. abre o infográfico do curso.</div></div>
+        </div>
+        <div class="owlbox ob-grey"><div class="owl" data-owl="3"></div><div class="t"><span class="h">Nota de método</span>
+          <b>Fonte:</b> consulta pública de processos do SIPAC/UFPB, feita em 24/11/2026, para os 8 processos em tramitação informados pela Direção. Química Industrial não tem processo; Engenharia de Materiais já tem o PPC novo em funcionamento, e o número do processo será informado pela coordenação. <b>Tempo:</b> dias corridos entre a data de envio para um setor e a data de envio para o seguinte; a última passagem conta até 24/11/2026. <b>Setores:</b> "CT/COC" reúne Secretaria e Direção do CT, os relatores do Conselho de Centro (outras coordenações do CT) e departamentos do CT; "PRG/CCA" reúne a Coordenação de Currículos Acadêmicos, o gabinete e a secretaria executiva da PRG e as coordenações Acadêmica e de Regulação e Avaliação; "Consepe" reúne a SODS e os departamentos relatores. <b>Documentos:</b> a linha do tempo mostra os documentos agrupados por data; o conteúdo de cada um não foi lido. A data da resolução é a do documento no processo. <b>Etapas:</b> classificação feita a partir dos setores e documentos, à luz do capítulo 4 do Manual CCA/PRG 2025.</div></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+{
+const DATA=[{"sig": "EQ", "etapa": 9, "sit": "Aprovado · aguarda implantação", "docs": [["2024-01-19", "PPC, 16 certidões departamentais e parecer"], ["2024-01-22", "5 certidões e parecer"], ["2024-03-13", "Planos de ajuste (relatoria do COC)"], ["2024-03-20", "Certidão do Conselho de Centro"], ["2024-07-03", "1º despacho da CCA, devolvendo à coordenação"], ["2024-08-27", "Plano de ajuste e 33 certidões"], ["2024-11-07", "2º despacho da CCA, devolvendo à coordenação"], ["2025-03-06", "Plano de ajuste e 4 certidões"], ["2025-03-28", "Relatório da CCA (3ª devolução)"], ["2025-08-14", "PPC revisado, relatório e certidão"], ["2025-09-09", "Relatório da CCA e envio à PROEX"], ["2025-09-18", "Parecer da PROEX (devolvido à coordenação)"], ["2025-09-29", "PPC e parecer da coordenação"], ["2025-09-30", "2º parecer da PROEX"], ["2025-10-08", "Minuta de resolução (CCA)"], ["2025-10-24", "Distribuição ao relator do Consepe"], ["2026-02-03", "Resolução do Consepe (data do documento)"], ["2026-02-19", "Parecer do relator (Depto. de Fonoaudiologia/CCS)"], ["2026-04-10", "SODS pede confirmação do envio da minuta por e-mail"], ["2026-05-14", "SODS devolve à CCA para implantação"], ["2026-11-05", "CCA consulta a Coordenação de Regulação e Avaliação"]], "leitura": "<b>Primeiro PPC do CT aprovado no ciclo, mas ainda não implantado.</b> A Resolução do Consepe é de fevereiro de 2026 e o processo está na CCA desde 14/05/2026 (194 dias), à espera do cadastro do novo currículo no SIGAA. Até chegar ao Consepe foram 21 meses, com três devoluções da CCA (respondidas em 55, 119 e 139 dias) e 117 dias com o relator do Consepe.", "acao": "Pedir à PRG/CCA a data de cadastro do currículo no SIGAA e confirmar a oferta em 2027.1, já que o Manual prevê oferta no semestre seguinte à aprovação.", "resol": "03/02/2026", "curso": "Engenharia Química", "proc": "23074.003506/2024-68", "aut": "2024-01-19", "status": "ATIVO", "segs": [["2024-01-19", "2024-01-22", "Coordenação", 3], ["2024-01-22", "2024-02-19", "CT/COC", 28], ["2024-02-19", "2024-03-08", "Coordenação", 18], ["2024-03-08", "2024-03-13", "CT/COC", 5], ["2024-03-13", "2024-03-13", "Coordenação", 0], ["2024-03-13", "2024-03-14", "CT/COC", 1], ["2024-03-14", "2024-03-15", "Coordenação", 1], ["2024-03-15", "2024-03-20", "CT/COC", 5], ["2024-03-20", "2024-07-03", "PRG/CCA", 105], ["2024-07-03", "2024-08-27", "Coordenação", 55], ["2024-08-27", "2024-11-07", "PRG/CCA", 72], ["2024-11-07", "2025-03-06", "Coordenação", 119], ["2025-03-06", "2025-03-28", "PRG/CCA", 22], ["2025-03-28", "2025-08-14", "Coordenação", 139], ["2025-08-14", "2025-09-09", "PRG/CCA", 26], ["2025-09-09", "2025-09-19", "PROEX", 10], ["2025-09-19", "2025-09-29", "Coordenação", 10], ["2025-09-29", "2025-09-30", "PROEX", 1], ["2025-09-30", "2025-10-17", "PRG/CCA", 17], ["2025-10-17", "2026-03-24", "Consepe/SODS", 158], ["2026-03-24", "2026-04-06", "Coordenação", 13], ["2026-04-06", "2026-04-10", "Consepe/SODS", 4], ["2026-04-10", "2026-04-10", "Coordenação", 0], ["2026-04-10", "2026-05-14", "Consepe/SODS", 34], ["2026-05-14", "2026-11-24", "PRG/CCA", 194]], "tot": {"Coordenação": 358, "CT/COC": 39, "PRG/CCA": 436, "PROEX": 11, "Consepe/SODS": 196}, "total": 1040, "atual": "PRG/CCA", "dias_atual": 194, "ndocs": 102}, {"sig": "AU", "etapa": 9, "sit": "Aprovado · aguarda implantação", "docs": [["2024-02-05", "Requerimento, PPC e 5 certidões"], ["2024-04-26", "CCA devolve; o processo ainda não tinha passado pelo COC"], ["2024-07-30", "Parecer do relator do COC (Coord. Eng. Química)"], ["2025-02-24", "PPC revisado e 2 certidões"], ["2025-03-18", "2º parecer do relator do COC"], ["2025-04-15", "3º parecer do relator do COC"], ["2025-04-16", "Certidão do Conselho de Centro"], ["2025-06-02", "Relatório da CCA (1ª devolução)"], ["2026-03-03", "PPC revisado e 12 certidões"], ["2026-05-14", "Relatório da CCA (2ª devolução)"], ["2026-07-10", "PPC revisado e 3 certidões"], ["2026-07-21", "Relatório da CCA (3ª devolução)"], ["2026-07-24", "Documento complementar"], ["2026-08-11", "Parecer da PROEX"], ["2026-09-04", "Minuta de resolução (CCA)"], ["2026-09-21", "Parecer do relator (Depto. Tecnologia de Alimentos/CTDR)"], ["2026-10-05", "Resolução do Consepe"], ["2026-11-09", "CCA consulta a Coordenação de Regulação e Avaliação"]], "leitura": "<b>Aprovado pelo Consepe em outubro de 2026, depois de 32 meses.</b> O processo começou fora do fluxo: foi à CCA sem a certidão do Conselho de Centro e voltou após 80 dias. A maior espera foi na coordenação: 274 dias para responder à primeira diligência da CCA (jun/2025 a mar/2026). Da última resposta à resolução, foram só 73 dias.", "acao": "Acompanhar com a PRG o cadastro no SIGAA para a oferta em 2027.1.", "resol": "05/10/2026", "curso": "Arquitetura e Urbanismo", "proc": "23074.007920/2024-06", "aut": "2024-02-05", "status": "ATIVO", "segs": [["2024-02-05", "2024-02-06", "Coordenação", 1], ["2024-02-06", "2024-04-26", "PRG/CCA", 80], ["2024-04-26", "2024-07-23", "Coordenação", 88], ["2024-07-23", "2024-07-31", "CT/COC", 8], ["2024-07-31", "2025-02-24", "Coordenação", 208], ["2025-02-24", "2025-03-21", "CT/COC", 25], ["2025-03-21", "2025-03-21", "Coordenação", 0], ["2025-03-21", "2025-04-16", "CT/COC", 26], ["2025-04-16", "2025-06-02", "PRG/CCA", 47], ["2025-06-02", "2026-03-03", "Coordenação", 274], ["2026-03-03", "2026-05-14", "PRG/CCA", 72], ["2026-05-14", "2026-07-10", "Coordenação", 57], ["2026-07-10", "2026-07-21", "PRG/CCA", 11], ["2026-07-21", "2026-07-24", "Coordenação", 3], ["2026-07-24", "2026-08-03", "PRG/CCA", 10], ["2026-08-03", "2026-08-12", "PROEX", 9], ["2026-08-12", "2026-09-04", "PRG/CCA", 23], ["2026-09-04", "2026-10-06", "Consepe/SODS", 32], ["2026-10-06", "2026-10-08", "PRG/CCA", 2], ["2026-10-08", "2026-11-05", "Consepe/SODS", 28], ["2026-11-05", "2026-11-24", "PRG/CCA", 19]], "tot": {"Coordenação": 631, "PRG/CCA": 264, "CT/COC": 59, "PROEX": 9, "Consepe/SODS": 60}, "total": 1023, "atual": "PRG/CCA", "dias_atual": 19, "ndocs": 72}, {"sig": "EA", "etapa": 5, "sit": "Diligência com a coordenação", "docs": [["2024-07-12", "PPC, certidão e solicitação de parecer do COC"], ["2024-08-01", "Parecer do relator (Coord. Eng. Materiais) e certidão do COC"], ["2024-08-07", "Despacho da PRG à CCA"], ["2025-01-27", "CCA envia à PROEX"], ["2025-02-05", "Despacho da PROEX"], ["2025-02-06", "Parecer da CCA (devolução à coordenação)"], ["2025-10-02", "PPC revisado"], ["2025-10-07", "Relatório da CCA (2ª devolução)"]], "leitura": "<b>É o caso mais parado do Centro: 413 dias na coordenação</b> desde a 2ª devolução da CCA (07/10/2025), sem nenhum documento novo. Antes disso, a coordenação levou 238 dias para responder à primeira diligência. A CCA, por sua vez, respondeu à última versão em 5 dias. O processo foi aberto com assunto de estrutura curricular (122.1), e não de PPC (121.1).", "acao": "Reunião da Direção com a coordenação e o NDE para fechar as pendências do relatório da CCA de 07/10/2025, com data de reenvio.", "resol": null, "curso": "Engenharia de Alimentos", "proc": "23074.057084/2024-23", "aut": "2024-07-12", "status": "ATIVO", "segs": [["2024-07-12", "2024-07-12", "Coordenação", 0], ["2024-07-12", "2024-08-01", "CT/COC", 20], ["2024-08-01", "2025-01-27", "PRG/CCA", 179], ["2025-01-27", "2025-02-05", "PROEX", 9], ["2025-02-05", "2025-02-06", "PRG/CCA", 1], ["2025-02-06", "2025-10-02", "Coordenação", 238], ["2025-10-02", "2025-10-07", "PRG/CCA", 5], ["2025-10-07", "2026-11-24", "Coordenação", 413]], "tot": {"Coordenação": 651, "CT/COC": 20, "PRG/CCA": 185, "PROEX": 9}, "total": 865, "atual": "Coordenação", "dias_atual": 413, "ndocs": 15}, {"sig": "EM", "etapa": 5, "sit": "Em análise na CCA", "docs": [["2024-08-22", "Solicitação, 6 documentos e certidão"], ["2024-09-18", "Parecer do relator do COC (Coord. Química Industrial)"], ["2024-09-19", "Certidão do Conselho de Centro"], ["2025-01-27", "CCA envia à PROEX"], ["2025-02-05", "Despacho da PROEX"], ["2025-02-08", "Parecer da CCA (1ª devolução)"], ["2025-10-14", "2 documentos (PPC revisado)"], ["2026-04-30", "Relatório da CCA (2ª devolução)"], ["2026-09-25", "Coordenação recebe o processo (148 dias depois do envio)"], ["2026-09-28", "Despachos e termo de juntada por apensação"]], "leitura": "<b>A CCA levou 198 dias para a segunda análise, e o processo ficou 148 dias sem ser recebido na coordenação.</b> O relatório da CCA foi enviado em 30/04/2026 e só recebido em 25/09/2026; a resposta saiu em 3 dias. Antes, a coordenação levou 248 dias para responder à primeira diligência. Está na CCA há 57 dias.", "acao": "Pedir à CCA prioridade para a 3ª análise e combinar com as coordenações o recebimento diário dos processos na caixa do SIPAC.", "resol": null, "curso": "Engenharia Mecânica", "proc": "23074.071816/2024-56", "aut": "2024-08-22", "status": "ATIVO", "segs": [["2024-08-22", "2024-08-22", "Coordenação", 0], ["2024-08-22", "2024-09-19", "CT/COC", 28], ["2024-09-19", "2025-01-27", "PRG/CCA", 130], ["2025-01-27", "2025-02-05", "PROEX", 9], ["2025-02-05", "2025-02-08", "PRG/CCA", 3], ["2025-02-08", "2025-10-14", "Coordenação", 248], ["2025-10-14", "2026-04-30", "PRG/CCA", 198], ["2026-04-30", "2026-09-28", "Coordenação", 151], ["2026-09-28", "2026-11-24", "PRG/CCA", 57]], "tot": {"Coordenação": 399, "CT/COC": 28, "PRG/CCA": 388, "PROEX": 9}, "total": 824, "atual": "PRG/CCA", "dias_atual": 57, "ndocs": 22}, {"sig": "EP", "etapa": 9, "sit": "Aprovado · aguarda implantação", "docs": [["2025-08-29", "Despacho de abertura"], ["2025-09-03", "PPC e 2 certidões"], ["2025-09-18", "Parecer do relator (Coord. Eng. Civil) e certidão do COC"], ["2025-09-30", "Relatório da CCA (devolução)"], ["2026-02-23", "Documento revisado e 23 anexos"], ["2026-02-24", "Relatório da CCA e envio à PROEX"], ["2026-03-02", "Parecer da PROEX"], ["2026-05-27", "Minuta de resolução e envio ao Consepe"], ["2026-07-29", "Parecer do relator (Depto. Fundamentação da Educação/CE)"], ["2026-08-03", "Resolução do Consepe"], ["2026-11-09", "CCA consulta a Coordenação de Regulação e Avaliação"]], "leitura": "<b>O processo mais rápido do ciclo: do protocolo à resolução em 11 meses.</b> O COC levou 15 dias, a primeira análise da CCA 12 dias, e a coordenação respondeu à diligência em 146 dias. Depois da aprovação, o processo circulou entre CCA e SODS por mais 3 meses e ainda não foi implantado no SIGAA.", "acao": "Acompanhar com a PRG o cadastro no SIGAA para a oferta em 2027.1.", "resol": "03/08/2026", "curso": "Engenharia de Produção", "proc": "23074.088048/2025-35", "aut": "2025-08-29", "status": "ATIVO", "segs": [["2025-08-29", "2025-09-03", "Coordenação", 5], ["2025-09-03", "2025-09-18", "CT/COC", 15], ["2025-09-18", "2025-09-30", "PRG/CCA", 12], ["2025-09-30", "2026-02-23", "Coordenação", 146], ["2026-02-23", "2026-02-24", "PRG/CCA", 1], ["2026-02-24", "2026-03-03", "PROEX", 7], ["2026-03-03", "2026-05-27", "PRG/CCA", 85], ["2026-05-27", "2026-08-04", "Consepe/SODS", 69], ["2026-08-04", "2026-10-16", "PRG/CCA", 73], ["2026-10-16", "2026-11-05", "Consepe/SODS", 20], ["2026-11-05", "2026-11-24", "PRG/CCA", 19]], "tot": {"Coordenação": 151, "CT/COC": 15, "PRG/CCA": 190, "PROEX": 7, "Consepe/SODS": 89}, "total": 452, "atual": "PRG/CCA", "dias_atual": 19, "ndocs": 54}, {"sig": "EPM", "etapa": 5, "sit": "Em análise na CCA", "docs": [["2025-09-09", "Despacho e certidão"], ["2025-09-23", "Despachos do Depto. de Eng. de Produção"], ["2025-10-16", "Parecer do relator do COC"], ["2025-10-17", "Certidão do Conselho de Centro"], ["2026-04-17", "Relatório da CCA (1ª devolução)"], ["2026-10-03", "20 certidões, certidão do CT e despachos"]], "leitura": "<b>A primeira análise da CCA levou 182 dias (out/2025 a abr/2026).</b> A coordenação respondeu em 169 dias, juntando 20 certidões departamentais, e o processo voltou à CCA em 03/10/2026, onde está há 52 dias. Ainda não passou pela PROEX, etapa obrigatória para a creditação da extensão.", "acao": "Acompanhar a reanálise na CCA e antecipar com a coordenação o que a PROEX costuma pedir sobre a creditação da extensão.", "resol": null, "curso": "Engenharia de Produção Mecânica", "proc": "23074.092084/2025-91", "aut": "2025-09-09", "status": "ATIVO", "segs": [["2025-09-09", "2025-09-09", "Coordenação", 0], ["2025-09-09", "2025-10-17", "CT/COC", 38], ["2025-10-17", "2026-04-17", "PRG/CCA", 182], ["2026-04-17", "2026-10-03", "Coordenação", 169], ["2026-10-03", "2026-11-24", "PRG/CCA", 52]], "tot": {"Coordenação": 169, "CT/COC": 38, "PRG/CCA": 234}, "total": 441, "atual": "PRG/CCA", "dias_atual": 52, "ndocs": 36}, {"sig": "EAmb", "etapa": 9, "sit": "Aprovado · aguarda implantação", "docs": [["2024-12-16", "PPC, 21 certidões e despacho"], ["2025-02-06", "Ata do colegiado"], ["2025-02-27", "PPC revisado"], ["2025-04-14", "Despacho do relator do COC (Coord. Eng. Mecânica) e certidão da coordenação"], ["2025-04-25", "Certidão do Conselho de Centro"], ["2025-05-16", "Relatório da CCA (1ª devolução)"], ["2025-10-16", "PPC revisado e certidão"], ["2025-11-11", "Relatório da CCA (2ª devolução)"], ["2025-12-29", "PPC revisado e certidões de 16 departamentos de 6 centros"], ["2026-01-28", "Relatório da CCA, ajuste no mesmo dia e envio à PROEX"], ["2026-02-05", "Parecer da PROEX"], ["2026-03-04", "Minuta de resolução (CCA)"], ["2026-04-06", "Resolução do Consepe"], ["2026-04-07", "Parecer do relator (Depto. Ciências Fundamentais e Sociais/CCA)"], ["2026-05-14", "SODS devolve à CCA para implantação"], ["2026-11-09", "CCA consulta a Coordenação de Regulação e Avaliação"]], "leitura": "<b>Aprovado em abril de 2026, está há 194 dias na CCA à espera da implantação.</b> Foi o processo com a tramitação mais disciplinada depois da aprovação no COC: três rodadas com a CCA (21, 26 e 30 dias de análise) e respostas da coordenação cada vez mais rápidas (153, 48 e 0 dias).", "acao": "Pedir à PRG/CCA a data de cadastro do currículo no SIGAA e confirmar a oferta em 2027.1.", "resol": "06/04/2026", "curso": "Engenharia Ambiental", "proc": "23074.116010/2024-15", "aut": "2024-12-16", "status": "ATIVO", "segs": [["2024-12-16", "2025-02-27", "Coordenação", 73], ["2025-02-27", "2025-04-14", "CT/COC", 46], ["2025-04-14", "2025-04-14", "Coordenação", 0], ["2025-04-14", "2025-04-25", "CT/COC", 11], ["2025-04-25", "2025-05-16", "PRG/CCA", 21], ["2025-05-16", "2025-10-16", "Coordenação", 153], ["2025-10-16", "2025-11-11", "PRG/CCA", 26], ["2025-11-11", "2025-12-29", "Coordenação", 48], ["2025-12-29", "2026-01-28", "PRG/CCA", 30], ["2026-01-28", "2026-01-28", "Coordenação", 0], ["2026-01-28", "2026-01-28", "PRG/CCA", 0], ["2026-01-28", "2026-02-05", "PROEX", 8], ["2026-02-05", "2026-03-05", "PRG/CCA", 28], ["2026-03-05", "2026-04-08", "Consepe/SODS", 34], ["2026-04-08", "2026-04-16", "PRG/CCA", 8], ["2026-04-16", "2026-04-17", "Consepe/SODS", 1], ["2026-04-17", "2026-04-23", "PRG/CCA", 6], ["2026-04-23", "2026-05-14", "Consepe/SODS", 21], ["2026-05-14", "2026-11-24", "PRG/CCA", 194]], "tot": {"Coordenação": 274, "CT/COC": 57, "PRG/CCA": 313, "PROEX": 8, "Consepe/SODS": 56}, "total": 708, "atual": "PRG/CCA", "dias_atual": 194, "ndocs": 91}, {"sig": "EC", "etapa": 5, "sit": "Diligência com a coordenação", "docs": [["2026-07-29", "Solicitação, PPC, 18 certidões e despacho"], ["2026-08-07", "PPC revisado, parecer e certidão"], ["2026-08-13", "Parecer do relator (Coord. Eng. Alimentos) e certidão do COC"], ["2026-09-25", "Relatório da CCA (1ª devolução)"]], "leitura": "<b>Começo rápido: COC em 6 dias e primeira análise da CCA em 43 dias.</b> Desde 25/09/2026 o processo está com a coordenação (60 dias) para responder ao relatório da CCA.", "acao": "Combinar com a coordenação uma data de reenvio; no ritmo atual, dá para chegar ao Consepe no 1º semestre de 2027.", "resol": null, "curso": "Engenharia Civil", "proc": "23074.071677/2026-20", "aut": "2026-07-29", "status": "ATIVO", "segs": [["2026-07-29", "2026-08-07", "Coordenação", 9], ["2026-08-07", "2026-08-13", "CT/COC", 6], ["2026-08-13", "2026-09-25", "PRG/CCA", 43], ["2026-09-25", "2026-11-24", "Coordenação", 60]], "tot": {"Coordenação": 69, "CT/COC": 6, "PRG/CCA": 43}, "total": 118, "atual": "Coordenação", "dias_atual": 60, "ndocs": 31}, {"sig": "EMat", "etapa": 10, "sit": "PPC novo em funcionamento", "docs": [], "leitura": "<b>O PPC novo de Engenharia de Materiais já está em funcionamento.</b> A Direção pediu à coordenação o número do processo de aprovação; quando chegar, a tramitação entra neste painel com a linha do tempo e os documentos.", "acao": "Receber da coordenação o número do processo de aprovação do PPC e incluí-lo no painel.", "resol": null, "curso": "Engenharia de Materiais", "proc": null, "aut": null, "status": "VIGENTE", "segs": null, "tot": {}, "total": 0, "atual": null, "dias_atual": 0, "ndocs": 0}, {"sig": "QI", "etapa": 1, "sit": "Sem processo", "docs": [], "leitura": "<b>Química Industrial ainda não tem processo no SIPAC.</b> Pelo Manual, o processo só é protocolado depois que o NDE propõe o PPC, o colegiado aprova e os departamentos emitem as certidões de oferta das disciplinas (etapas 1 a 3).", "acao": "Levantar com a coordenação em que ponto estão as etapas 1 a 3 e definir uma data para protocolar o processo, usando o template da CCA de 28/10/2025.", "resol": null, "curso": "Química Industrial", "proc": null, "aut": null, "status": "SEM", "segs": null, "tot": {}, "total": 0, "atual": null, "dias_atual": 0, "ndocs": 0}];
+const HOJE=new Date("2026-11-24T12:00:00");
+const SET=["Coordenação","CT/COC","PRG/CCA","PROEX","Consepe/SODS"];
+const SETN={"Coordenação":"Coordenação do curso","CT/COC":"CT · Conselho de Centro","PRG/CCA":"PRG · CCA","PROEX":"PROEX","Consepe/SODS":"Consepe · SODS"};
+const SCOR={"Coordenação":"#C6543C","CT/COC":"#283E4C","PRG/CCA":"#55697A","PROEX":"#8F6410","Consepe/SODS":"#3E6B57"};
+const SITS=["PPC novo em funcionamento","Aprovado · aguarda implantação","Em análise na CCA","Diligência com a coordenação","Sem processo"];
+const SITC={"PPC novo em funcionamento":"#3E6B57","Aprovado · aguarda implantação":"#283E4C","Em análise na CCA":"#55697A","Diligência com a coordenação":"#C6543C","PPC vigente (2021) · sem processo de atualização":"#A5B1BA","Sem processo":"#7A2632"};
+const SITP={"PPC novo em funcionamento":"p-az","Aprovado · aguarda implantação":"p-az","Em análise na CCA":"p-cz","Diligência com a coordenação":"p-tc","PPC vigente (2021) · sem processo de atualização":"p-cz","Sem processo":"p-vi"};
+const SITCURTO={"PPC novo em funcionamento":"Em funcionamento","Aprovado · aguarda implantação":"Aprovado, aguarda implantação","Em análise na CCA":"Em análise na CCA","Diligência com a coordenação":"Diligência com a coordenação","PPC vigente (2021) · sem processo de atualização":"PPC 2021, sem atualização","Sem processo":"Sem processo"};
+const ETAPAS=[["NDE","Propositura pelo NDE"],["Colegiado","Apreciação pelo colegiado do curso"],["Certidões","Certidões departamentais de oferta"],["COC","Conselho de Centro"],["CCA","Parecer técnico-pedagógico da CCA/PRG (com diligências)"],["PROEX","Análise da creditação da extensão (com diligências)"],["Minuta","Minuta de resolução pela CCA"],["Consepe","Apreciação e votação no Consepe; publicação pela SODS"],["SIGAA","Devolução à PRG e cadastro do currículo no SIGAA"],["Arquivo","Devolução à SODS e arquivamento"]];
+const C={pe:"#283E4C",tc:"#C6543C",vi:"#7A2632",cz:"#A5B1BA",czc:"#D8DEE3",tx:"#3a4452",gr:"#E4E7EA"};
+const fmt=n=>Number(n).toLocaleString("pt-BR");
+const br=iso=>iso?iso.slice(8,10)+"/"+iso.slice(5,7)+"/"+iso.slice(0,4):"–";
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dd=(a,b)=>Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5);
+
+/* corujas */
+const BODY='<path d="M12 10 L21 18 Q32 12 43 18 L52 10 L50.5 27 Q54 35 52 45 Q48 58 32 58 Q16 58 12 45 Q10 35 13.5 27 Z" fill="#fdf3dc" stroke="#283E4C" stroke-width="2.2" stroke-linejoin="round"/><path d="M14.5 34 Q10.5 42 16.5 51" fill="none" stroke="#283E4C" stroke-width="2" stroke-linecap="round"/><path d="M49.5 34 Q53.5 42 47.5 51" fill="none" stroke="#283E4C" stroke-width="2" stroke-linecap="round"/><path d="M24 45 q2 2 4 0 q2 2 4 0 q2 2 4 0 q2 2 4 0" fill="none" stroke="#c9a14a" stroke-width="1.5" stroke-linecap="round"/><path d="M27 50.5 q2 2 4 0 q2 2 4 0 q2 2 4 0" fill="none" stroke="#c9a14a" stroke-width="1.5" stroke-linecap="round"/><path d="M26 58 l-2 3 M28.5 58 v3 M35.5 58 v3 M38 58 l2 3" stroke="#e0a526" stroke-width="2" stroke-linecap="round"/>';
+const OLHOS='<circle cx="24.5" cy="29" r="7.2" fill="#ffffff" stroke="#283E4C" stroke-width="2"/><circle cx="39.5" cy="29" r="7.2" fill="#ffffff" stroke="#283E4C" stroke-width="2"/><circle cx="25.2" cy="29.5" r="3" fill="#283E4C"/><circle cx="40.2" cy="29.5" r="3" fill="#283E4C"/><circle cx="26.2" cy="28.4" r="1" fill="#ffffff"/><circle cx="41.2" cy="28.4" r="1" fill="#ffffff"/><path d="M29.5 35 L32 40 L34.5 35 Z" fill="#e0a526" stroke="#283E4C" stroke-width="1.2" stroke-linejoin="round"/>';
+const OCULOS='<circle cx="24.5" cy="29" r="9" fill="none" stroke="#283E4C" stroke-width="2.4"/><circle cx="39.5" cy="29" r="9" fill="none" stroke="#283E4C" stroke-width="2.4"/>';
+const PREOC='<path d="M17 19 L27 22 M47 19 L37 22" stroke="#283E4C" stroke-width="2.2" stroke-linecap="round"/>';
+const OWL={2:BODY+OLHOS+OCULOS,3:BODY+OLHOS,4:BODY+OLHOS+PREOC};
+document.querySelectorAll("[data-owl]").forEach(el=>el.innerHTML='<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+OWL[el.dataset.owl]+'</svg>');
+const X_ICO='<svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+/* dados derivados */
+const CUR=DATA.map(c=>{const c2={...c};c2.parado=c.etapa>=5&&c.dias_atual>180;c2.setorAtual=c.status==="ATIVO"?c.atual:(c.status==="VIGENTE"?"Em funcionamento":"Sem processo");return c2});
+const SETATU=["Coordenação","PRG/CCA","Em funcionamento","Sem processo"];
+const DIMS={sit:{rot:"Situação",vals:SITS,nome:v=>SITCURTO[v]},setor:{rot:"Setor atual",vals:SETATU,nome:v=>SETN[v]||v},curso:{rot:"Curso",vals:CUR.map(c=>c.sig),nome:v=>CUR.find(c=>c.sig===v).curso}};
+const F={sit:null,setor:null,curso:null};
+const campo={sit:"sit",setor:"setorAtual",curso:"sig"};
+const linhas=ex=>CUR.filter(r=>Object.keys(F).every(k=>k===ex||F[k]===null||r[campo[k]]===F[k]));
+function setF(k,v){F[k]=(F[k]===v?null:v);render()}
+
+/* filtros */
+const painel=document.getElementById("flPainel");
+painel.innerHTML=Object.entries(DIMS).map(([k,d])=>`<label for="f-${k}">${d.rot}<select id="f-${k}" data-k="${k}"><option value="">Todos</option>${d.vals.map(v=>`<option value="${esc(v)}">${esc(d.nome(v))}</option>`).join("")}</select></label>`).join("");
+painel.addEventListener("change",e=>{const k=e.target.dataset.k;F[k]=e.target.value||null;render()});
+document.getElementById("limpar").onclick=()=>{Object.keys(F).forEach(k=>F[k]=null);render()};
+const flBt=document.getElementById("flBt");
+function abrirFiltros(a){flBt.setAttribute("aria-expanded",a);painel.hidden=!a;try{localStorage.setItem("ppc-fl",a?"1":"0")}catch(e){}}
+flBt.onclick=()=>abrirFiltros(painel.hidden);
+try{if(localStorage.getItem("ppc-fl")==="0")abrirFiltros(false)}catch(e){}
+
+/* menu */
+const hamb=document.getElementById("hamb"),mobile=()=>matchMedia("(max-width:820px)").matches;
+hamb.onclick=()=>{if(mobile()){document.body.classList.toggle("menu-aberto");hamb.setAttribute("aria-expanded",document.body.classList.contains("menu-aberto"))}
+ else{document.body.classList.toggle("recolhido");const r=document.body.classList.contains("recolhido");hamb.setAttribute("aria-expanded",!r);try{localStorage.setItem("ct-rec",r?"1":"0")}catch(e){}}};
+document.getElementById("veu").onclick=()=>document.body.classList.remove("menu-aberto");
+try{if(localStorage.getItem("ct-rec")==="1")document.body.classList.add("recolhido")}catch(e){}
+let secAtual="panorama";
+function irPara(id,push){
+ let m=/^curso-(.+)$/.exec(id);
+ if(m&&CUR.some(c=>c.sig===m[1])){F.curso=m[1];id="cursos";render()}
+ if(!document.getElementById(id)||!document.getElementById(id).classList.contains("secao"))id="panorama";
+ secAtual=id;
+ document.querySelectorAll(".secao").forEach(s=>s.hidden=s.id!==id);
+ document.querySelectorAll(".item").forEach(b=>b.dataset.sec===id?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+ document.body.classList.remove("menu-aberto");window.scrollTo({top:0});
+ const h=id==="cursos"&&F.curso?"curso-"+F.curso:id;
+ try{history.replaceState(null,"","#"+h)}catch(e){}
+ requestAnimationFrame(()=>{Object.values(charts).forEach(c=>{c.resize();c.update("none")});if(id==="cursos")desenharTL()});
+}
+document.querySelectorAll(".item").forEach(b=>b.onclick=()=>irPara(b.dataset.sec));
+window.addEventListener("hashchange",()=>irPara(location.hash.slice(1)));
+
+/* Chart.js */
+Chart.defaults.font.family='"Source Sans 3","Segoe UI",Arial,sans-serif';Chart.defaults.font.size=13;Chart.defaults.color=C.tx;Chart.defaults.locale="pt-BR";Chart.defaults.animation=false;
+function corEscura(c){c=String(c||'');if(!/^#[0-9a-f]{6}/i.test(c))return true;if(c.length===9&&parseInt(c.slice(7),16)<0x99)return false;const n=parseInt(c.slice(1,7),16);return (0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))<150;}
+Chart.register({id:'rotulos',afterDatasetsDraw(ch){const ctx=ch.ctx,A=ch.chartArea,hz=ch.options.indexAxis==='y',st=!!ch.options.scales?.x?.stacked;
+ const f=ch._fmt||(v=>Number(v).toLocaleString('pt-BR',{maximumFractionDigits:1}));ctx.save();ctx.font='600 11px "Source Sans 3",Arial,sans-serif';
+ if(st&&hz){const tot=[],fim=[];ch.data.datasets.forEach((ds,di)=>{if(!ch.isDatasetVisible(di))return;ch.getDatasetMeta(di).data.forEach((el,i)=>{const v=ds.data[i];if(!v)return;tot[i]=(tot[i]||0)+v;fim[i]=Math.max(fim[i]??-1e9,el.x);
+   if(Math.abs(el.x-el.base)>=30){const bg=[].concat(ds.backgroundColor)[Array.isArray(ds.backgroundColor)?i:0];ctx.fillStyle=corEscura(bg)?'#fff':'#3a4452';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(f(v),(el.x+el.base)/2,el.y);}});});
+  ctx.fillStyle='#283E4C';ctx.textAlign='left';ctx.textBaseline='middle';const m0=ch.getDatasetMeta(0);tot.forEach((t,i)=>{if(t&&m0.data[i])ctx.fillText(f(t),fim[i]+6,m0.data[i].y);});}
+ else ch.data.datasets.forEach((ds,di)=>{if(!ch.isDatasetVisible(di))return;ch.getDatasetMeta(di).data.forEach((el,i)=>{const v=ds.data[i];if(v==null||v===0)return;const t=f(v),w=ctx.measureText(t).width,bg=[].concat(ds.backgroundColor)[Array.isArray(ds.backgroundColor)?i:0];
+   if(hz){ctx.textBaseline='middle';if(el.x+6+w>A.right){ctx.textAlign='right';ctx.fillStyle=corEscura(bg)?'#fff':'#3a4452';ctx.fillText(t,el.x-6,el.y);}else{ctx.textAlign='left';ctx.fillStyle='#3a4452';ctx.fillText(t,el.x+6,el.y);}}
+   else{ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillStyle='#3a4452';ctx.fillText(t,el.x,el.y-4);}});});
+ ctx.restore();}});
+const ponteiro=(ev,els)=>{ev.native.target.style.cursor=els.length?"pointer":"default"};
+const eixoH={x:{grid:{color:C.gr},border:{display:false},ticks:{precision:0},grace:"12%"},y:{grid:{display:false},border:{display:false}}};
+const charts={};
+charts.sit=new Chart(document.getElementById("gSit"),{type:"bar",data:{labels:SITS.map(s=>SITCURTO[s]),datasets:[{data:[],backgroundColor:[],borderRadius:4,maxBarThickness:28}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,scales:eixoH,onHover:ponteiro,onClick:(e,els)=>els.length&&setF("sit",SITS[els[0].index]),plugins:{legend:{display:false}}}});
+charts.idade=new Chart(document.getElementById("gIdade"),{type:"bar",data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:4,maxBarThickness:26}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,scales:eixoH,onHover:ponteiro,onClick:(e,els)=>els.length&&setF("curso",charts.idade._sigs[els[0].index]),plugins:{legend:{display:false},tooltip:{callbacks:{label:i=>fmt(i.raw)+" dias"}}}}});
+charts.idade._fmt=v=>fmt(v)+" d";
+charts.set=new Chart(document.getElementById("gSet"),{type:"bar",data:{labels:[],datasets:SET.map(s=>({label:SETN[s],data:[],backgroundColor:SCOR[s],borderRadius:2,maxBarThickness:30}))},
+ options:{indexAxis:"y",maintainAspectRatio:false,scales:{x:{stacked:true,grid:{color:C.gr},border:{display:false},grace:"10%"},y:{stacked:true,grid:{display:false},border:{display:false}}},onHover:ponteiro,
+ onClick:(e,els)=>els.length&&setF("curso",charts.set._sigs[els[0].index]),plugins:{legend:{display:false},tooltip:{callbacks:{label:i=>i.dataset.label+": "+fmt(i.raw)+" dias"}}}}});
+charts.pass=new Chart(document.getElementById("gPass"),{type:"bar",data:{labels:SET.map(s=>SETN[s]),datasets:[{data:[],backgroundColor:SET.map(s=>SCOR[s]),borderRadius:4,maxBarThickness:28}]},
+ options:{indexAxis:"y",maintainAspectRatio:false,scales:eixoH,plugins:{legend:{display:false},tooltip:{callbacks:{label:i=>fmt(i.raw)+" dias por passagem"}}}}});
+charts.pass._fmt=v=>fmt(Math.round(v))+" d";
+document.getElementById("legSet").innerHTML=SET.map(s=>`<span><i style="background:${SCOR[s]}"></i>${SETN[s]}</span>`).join("");
+
+/* tabelas ordenáveis */
+const ordem={pan:{k:"total",dir:-1}};
+const ord=(a,o)=>a.sort((x,y)=>(x[o.k]>y[o.k]?1:x[o.k]<y[o.k]?-1:0)*o.dir);
+const cab=(cols,o,id)=>"<thead><tr>"+cols.map(c=>`<th class="${c.n?"n":""}" data-k="${c.k}" data-t="${id}" ${o&&o.k===c.k?`aria-sort="${o.dir>0?"ascending":"descending"}"`:""}>${c.t}</th>`).join("")+"</tr></thead>";
+document.addEventListener("click",e=>{const th=e.target.closest("th[data-t]");if(!th||!ordem[th.dataset.t])return;const o=ordem[th.dataset.t];o.dir=o.k===th.dataset.k?-o.dir:1;o.k=th.dataset.k;render()});
+
+const etapaDe=c=>c.etapa;
+function passagens(rows){const p={};SET.forEach(s=>p[s]=[]);rows.forEach(c=>(c.segs||[]).forEach(s=>{if(s[3]>0||true)p[s[2]].push({d:s[3],c:c.curso,ini:s[0],fim:s[1]})}));return p}
+
+/* ===== render ===== */
+function render(){
+ const rows=linhas(),n=rows.length;
+ const ativos=Object.keys(F).filter(k=>F[k]!==null);
+ document.getElementById("chips").innerHTML=ativos.length?ativos.map(k=>`<button class="chip" data-k="${k}" aria-label="Remover filtro ${DIMS[k].rot}"><small>${DIMS[k].rot}</small>${esc(DIMS[k].nome(F[k]))}<span class="x">${X_ICO}</span></button>`).join(""):'<span class="fl-vazio">Nenhum filtro ativo · mostrando os 10 cursos do CT</span>';
+ document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>setF(c.dataset.k,F[c.dataset.k]));
+ const qt=document.getElementById("flQt");qt.hidden=!ativos.length;qt.textContent=ativos.length;document.getElementById("limpar").hidden=!ativos.length;
+ Object.keys(F).forEach(k=>document.getElementById("f-"+k).value=F[k]??"");
+
+ const comProc=rows.filter(r=>r.proc),aprov=rows.filter(r=>r.etapa===9),trami=rows.filter(r=>r.status==="ATIVO"&&r.etapa<9),parados=rows.filter(r=>r.parado||(r.etapa===9&&r.dias_atual>180));
+ const maisParado=[...rows.filter(r=>r.status==="ATIVO")].sort((a,b)=>b.dias_atual-a.dias_atual)[0];
+ document.getElementById("kpis").innerHTML=[[fmt(n),"cursos no recorte · "+comProc.length+" com processo",""],[fmt(aprov.length),"aprovados no Consepe, sem implantação no SIGAA","g"],[fmt(trami.length),"em tramitação antes do Consepe",""],[maisParado?fmt(maisParado.dias_atual):"–",maisParado?"dias parado no mesmo setor ("+maisParado.sig+")":"sem processo ativo","r"]]
+  .map(([v,l,c])=>`<div class="stat ${c}"><b>${v}</b><span>${l}</span></div>`).join("");
+
+ const rs=linhas("sit");charts.sit.data.datasets[0].data=SITS.map(s=>rs.filter(r=>r.sit===s).length);
+ charts.sit.data.datasets[0].backgroundColor=SITS.map(s=>F.sit===null||F.sit===s?SITC[s]:C.czc);charts.sit.update();
+ const ri=[...linhas("curso")].filter(r=>r.status==="ATIVO").sort((a,b)=>b.total-a.total);charts.idade._sigs=ri.map(r=>r.sig);
+ charts.idade.data.labels=ri.map(r=>r.curso);charts.idade.data.datasets[0].data=ri.map(r=>r.total);
+ charts.idade.data.datasets[0].backgroundColor=ri.map(r=>F.curso===null||F.curso===r.sig?SITC[r.sit]:C.czc);charts.idade.update();
+
+ const tp=ord(rows.map(r=>({...r,setorN:SETN[r.setorAtual]||r.setorAtual,aut:r.aut||""})),ordem.pan);
+ document.getElementById("contaTab").textContent=tp.length+" cursos · clique numa linha para abrir o infográfico";
+ document.getElementById("tPan").innerHTML=cab([{k:"curso",t:"Curso"},{k:"proc",t:"Processo"},{k:"aut",t:"Autuação"},{k:"etapa",t:"Etapa",n:1},{k:"setorN",t:"Onde está"},{k:"dias_atual",t:"Dias no setor",n:1},{k:"total",t:"Idade (dias)",n:1},{k:"sit",t:"Situação"}],ordem.pan,"pan")+
+  "<tbody>"+tp.map(r=>`<tr class="clicavel ${F.curso===r.sig?"sel":""}" data-sig="${r.sig}"><td class="a">${esc(r.curso)}</td><td>${r.proc||(r.status==="VIGENTE"?"<span class=\"mini\">a informar</span>":"–")}</td><td>${r.aut?br(r.aut):"–"}</td><td class="n">${r.etapa} de 10</td><td>${esc(r.setorN)}</td><td class="n">${r.status==="ATIVO"?(r.dias_atual>180?`<span class="pill p-vi">${fmt(r.dias_atual)}</span>`:fmt(r.dias_atual)):"–"}</td><td class="n">${r.total?fmt(r.total):"–"}</td><td><span class="pill ${SITP[r.sit]}">${SITCURTO[r.sit]}</span></td></tr>`).join("")+"</tbody>";
+ document.querySelectorAll("#tPan tr[data-sig]").forEach(tr=>tr.onclick=()=>{F.curso=tr.dataset.sig;render();irPara("cursos")});
+ const nAp=aprov.length;
+ document.getElementById("leituraPan").innerHTML=n?`<b>${nAp} de ${n} cursos</b> do recorte já têm o PPC aprovado no Consepe`+(nAp?", mas nenhum foi implantado no SIGAA ainda":"")+". "+(trami.length?`<b>${trami.length}</b> seguem em análise ou diligência antes do Consepe. `:"")+(maisParado?`A maior espera atual é de <b>${esc(maisParado.curso)}</b>: ${fmt(maisParado.dias_atual)} dias em ${esc(SETN[maisParado.atual])}.`:""):"Nenhum curso atende a esta combinação de filtros. Remova uma das etiquetas acima.";
+
+ /* matriz do fluxo */
+ let mh='<div class="mh">Curso</div>'+ETAPAS.map((e,i)=>`<div class="mh" title="${esc(e[1])}">${i+1}<small>${e[0]}</small></div>`).join("");
+ mh+=rows.map(r=>`<div class="mc" data-sig="${r.sig}" title="Abrir infográfico">${esc(r.curso)}</div>`+ETAPAS.map((e,i)=>{const k=i+1;let cl=k<r.etapa?"ok":(k===r.etapa?(r.status==="ATIVO"&&r.dias_atual>180?"pa":"at"):"");if(r.sig==="QI"&&k<=3)cl=k===1?"at":"";if(r.status==="VIGENTE")cl="ok";
+   return `<div title="${esc(r.curso)} · etapa ${k}: ${esc(e[1])}"><span class="dot ${cl}"></span></div>`}).join("")).join("");
+ const mz=document.getElementById("matriz");mz.innerHTML=mh;mz.querySelectorAll(".mc").forEach(d=>d.onclick=()=>{F.curso=d.dataset.sig;render();irPara("cursos")});
+ const porE={};rows.forEach(r=>porE[r.etapa]=(porE[r.etapa]||0)+1);
+ document.getElementById("etapas").innerHTML=ETAPAS.map((e,i)=>`<div class="mapc"><span class="n">${i+1}</span><div><b>${e[0]}.</b> ${esc(e[1])}${porE[i+1]?` · <span class="pill p-tc">${porE[i+1]} curso${porE[i+1]>1?"s":""} aqui</span>`:""}</div></div>`).join("");
+ document.getElementById("leituraFluxo").innerHTML=n?`No recorte, <b>${rows.filter(r=>r.etapa===9).length} cursos estão na etapa 9</b> (aprovados, aguardando o cadastro no SIGAA) e <b>${rows.filter(r=>r.etapa===5).length} na etapa 5</b>, o vaivém entre a CCA e a coordenação. Nenhum processo está parado no COC: o Conselho de Centro resolveu cada caso em 6 a 59 dias.`+(rows.some(r=>r.status==="SEM")?` ${rows.filter(r=>r.status==="SEM").map(r=>esc(r.curso)).join(" e ")} ainda não tem processo aberto.`:"")+(rows.some(r=>r.status==="VIGENTE")?` ${rows.filter(r=>r.status==="VIGENTE").map(r=>esc(r.curso)).join(" e ")} já está com o PPC novo em funcionamento.`:""):"Nenhum curso no recorte.";
+
+ /* picker e infográfico */
+ const pk=document.getElementById("picker");
+ const alvo=F.curso||(rows[0]&&rows[0].sig);
+ pk.innerHTML=linhas("curso").map(r=>`<button data-sig="${r.sig}" aria-pressed="${r.sig===alvo}">${esc(r.curso)}</button>`).join("");
+ pk.querySelectorAll("button").forEach(b=>b.onclick=()=>{F.curso=b.dataset.sig;render();if(secAtual==="cursos")try{history.replaceState(null,"","#curso-"+F.curso)}catch(e){}});
+ infografico(CUR.find(c=>c.sig===alvo));
+
+ /* tempo por setor */
+ const rt=[...linhas("curso")].filter(r=>r.status==="ATIVO").sort((a,b)=>b.total-a.total);charts.set._sigs=rt.map(r=>r.sig);
+ charts.set.data.labels=rt.map(r=>r.curso);
+ charts.set.data.datasets.forEach((ds,i)=>{const s=SET[i];ds.data=rt.map(r=>r.tot[s]||0);ds.backgroundColor=rt.map(r=>F.curso===null||F.curso===r.sig?SCOR[s]:SCOR[s]+"33")});charts.set.update();
+ const P=passagens(rows.filter(r=>r.status==="ATIVO"));
+ charts.pass.data.datasets[0].data=SET.map(s=>P[s].length?P[s].reduce((a,b)=>a+b.d,0)/P[s].length:0);charts.pass.update();
+ let posAp=0;rows.filter(r=>r.status==="ATIVO").forEach(r=>{let ap=false;r.segs.forEach(g=>{if(g[2]==="Consepe/SODS")ap=true;else if(ap&&g[2]==="PRG/CCA")posAp+=g[3]})});const tot=SET.map(s=>P[s].reduce((a,b)=>a+b.d,0)),soma=tot.reduce((a,b)=>a+b,0);
+ document.getElementById("tSet").innerHTML=cab([{k:"s",t:"Setor"},{k:"p",t:"Passagens",n:1},{k:"m",t:"Média (dias)",n:1},{k:"x",t:"Maior (dias)",n:1},{k:"t",t:"Total (dias)",n:1},{k:"q",t:"% do tempo",n:1}])+"<tbody>"+
+  SET.map((s,i)=>{const L=P[s],mx=L.reduce((a,b)=>b.d>a.d?b:a,{d:0,c:""});return `<tr><td class="a"><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:${SCOR[s]};margin-right:8px"></i>${SETN[s]}</td><td class="n">${L.length}</td><td class="n">${L.length?fmt(Math.round(tot[i]/L.length)):"–"}</td><td class="n">${mx.d?fmt(mx.d)+" ("+mx.c+")":"–"}</td><td class="n">${fmt(tot[i])}</td><td class="n">${soma?Math.round(tot[i]/soma*100)+"%":"–"}</td></tr>`}).join("")+"</tbody>";
+ document.getElementById("leituraTempo").innerHTML=soma?`<b>A coordenação do curso concentra ${Math.round(tot[0]/soma*100)}% do tempo</b> dos processos do recorte, e a PRG/CCA ${Math.round(tot[2]/soma*100)}%. O CT (Conselho de Centro) responde por ${Math.round(tot[1]/soma*100)}% e a PROEX por ${Math.round(tot[3]/soma*100)}%: são as etapas mais rápidas do fluxo.`+(posAp?` Da PRG/CCA, <b>${fmt(posAp)} dias</b> foram depois da aprovação no Consepe, à espera do cadastro no SIGAA.`:""):"Nenhum processo no recorte.";
+
+ /* achados e ações */
+ document.getElementById("tAcao").innerHTML=cab([{k:"c",t:"Curso"},{k:"s",t:"Situação"},{k:"a",t:"Encaminhamento"}])+"<tbody>"+rows.map(r=>`<tr class="clicavel" data-sig="${r.sig}"><td class="a">${esc(r.curso)}</td><td><span class="pill ${SITP[r.sit]}">${SITCURTO[r.sit]}</span></td><td>${esc(r.acao)}</td></tr>`).join("")+"</tbody>";
+ document.querySelectorAll("#tAcao tr[data-sig]").forEach(tr=>tr.onclick=()=>{F.curso=tr.dataset.sig;render();irPara("cursos")});
+}
+
+/* achados (fixos, sobre os 9 processos) */
+document.getElementById("achados").innerHTML=[
+ ["r","4","PPCs aprovados e nenhum implantado","Química (resolução de fev/2026), Ambiental (abr/2026), Produção (ago/2026) e Arquitetura (out/2026) estão na CCA para cadastro no SIGAA. Química e Ambiental esperam há 194 dias. O Manual prevê a oferta do novo currículo no semestre seguinte à aprovação; a consulta da CCA à Coordenação de Regulação e Avaliação, entre 5 e 10/11/2026, sugere implantação para 2027.1."],
+ ["r","413 dias","Engenharia de Alimentos parada na coordenação","Desde 07/10/2025 o processo aguarda resposta ao relatório da CCA, sem documento novo. É o único caso em que o atraso atual é todo do curso."],
+ ["","238–274 dias","Respostas às primeiras diligências da CCA são lentas","Arquitetura (274), Mecânica (248) e Alimentos (238) levaram cerca de 8 a 9 meses para responder à primeira devolução. Nas rodadas seguintes, as respostas ficam bem mais rápidas (Ambiental: 153, 48 e 0 dias)."],
+ ["","11–198 dias","A análise da CCA varia muito","A primeira análise foi de 11 dias (Produção) a 182 dias (Produção Mecânica); a segunda análise da Mecânica levou 198 dias. A PROEX, ao contrário, sempre respondeu em até 10 dias."],
+ ["g","6–59 dias","O Conselho de Centro não é gargalo","Todos os processos passaram pelo COC em menos de 2 meses. O único desvio foi Arquitetura, protocolada direto na CCA em 2024 e devolvida 80 dias depois para passar pelo COC."],
+ ["","148 dias","Processo enviado e não recebido","O relatório da CCA para Engenharia Mecânica, enviado em 30/04/2026, só foi recebido pela coordenação em 25/09/2026. A resposta saiu em 3 dias depois do recebimento: a espera foi na caixa do SIPAC, não na elaboração da resposta."],
+ ["","1 curso","Química Industrial sem processo","Química Industrial é o único curso sem processo aberto no SIPAC. Engenharia de Materiais já está com o PPC novo em funcionamento; o número do processo de aprovação foi pedido à coordenação."]
+].map(([c,n,t,x])=>`<div class="achado ${c}"><div class="n">${n}</div><div><h4>${t}</h4>${x}</div></div>`).join("");
+document.getElementById("leituraAnalise").innerHTML="<b>O tempo se perde em dois lugares: na resposta das coordenações às diligências e na implantação depois do Consepe.</b> Três frentes resolvem a maior parte: acompanhamento mensal pela Direção dos processos parados há mais de 60 dias, prazo interno de 30 dias para as coordenações responderem à CCA e um pedido formal à PRG com o calendário de implantação dos 4 PPCs aprovados.";
+
+/* infográfico de um curso */
+let atualInfo=null;
+function infografico(c){
+ const el=document.getElementById("info");atualInfo=c;
+ if(!c){el.innerHTML="<p>Nenhum curso no recorte.</p>";return}
+ const iP=c.segs?c.segs.findIndex(s=>s[2]==="PRG/CCA"):-1;const dev=iP<0?0:c.segs.slice(iP).filter(s=>s[2]==="Coordenação").length;
+ const ndoc=c.ndocs||0;
+ const trilho=ETAPAS.map((e,i)=>{const k=i+1;let cl=k<c.etapa?"ok":(k===c.etapa?(c.status==="ATIVO"&&c.dias_atual>180?"pa":"at"):"");if(c.sig==="QI"&&k===1)cl="at";if(c.status==="VIGENTE")cl="ok";return `<div class="e ${cl}" title="${esc(e[1])}"><div class="b"></div>${k}<span>${e[0]}</span></div>`}).join("");
+ const totS=c.segs?SET.filter(s=>c.tot[s]).map(s=>`<div style="flex:${c.tot[s]};background:${SCOR[s]}" title="${SETN[s]}: ${fmt(c.tot[s])} dias">${c.tot[s]/c.total>.07?fmt(c.tot[s])+" d":""}</div>`).join(""):"";
+ el.innerHTML=`<div class="info-cab"><div><h3>${esc(c.curso)}</h3><div class="proc">${c.proc?"Processo "+c.proc+" · autuado em "+br(c.aut):(c.status==="VIGENTE"?"Número do processo de aprovação a informar pela coordenação":"Sem processo no SIPAC")}${c.resol?" · Resolução do Consepe: "+c.resol:""}</div></div><span class="pill">${SITCURTO[c.sit]}</span></div>
+  <div class="stats" style="margin-top:16px">${[[c.total?fmt(c.total):"–","dias de processo",""],[c.status==="ATIVO"?fmt(c.dias_atual):"–",c.status==="ATIVO"?"dias em "+SETN[c.atual]:"sem tramitação ativa",c.status==="ATIVO"&&c.dias_atual>180?"r":""],[c.segs?fmt(dev):"–","retornos à coordenação depois de chegar à PRG","g"],[ndoc?fmt(ndoc):"–","documentos no processo","g"]].map(([v,l,k])=>`<div class="stat ${k}"><b>${v}</b><span>${l}</span></div>`).join("")}</div>
+  <h3 style="margin-top:6px">Etapa ${c.etapa} de 10 no fluxo do Manual</h3><div class="trilho">${trilho}</div>
+  ${c.segs?`<h3 style="margin-top:10px">Linha do tempo por setor</h3><div class="leg">${SET.filter(s=>c.tot[s]).map(s=>`<span><i style="background:${SCOR[s]}"></i>${SETN[s]}</span>`).join("")}</div><div class="tl" id="tl"><svg id="tlsvg" role="img" aria-label="Linha do tempo do processo"></svg></div>
+  <p class="cap">A faixa muda de cor a cada setor; os números marcam documentos inseridos (lista abaixo). A linha tracejada é hoje, 24/11/2026${c.status==="ARQUIVADO"?" (o processo foi arquivado em 13/11/2021)":""}.</p>
+  <h3>Tempo total por setor</h3><div class="barra-set">${totS}</div>`:""}
+  ${c.docs.length?`<h3 style="margin-top:6px">Documentos e marcos</h3><ol class="docs">${c.docs.map((d,i)=>`<li><b>${i+1}</b><span class="d">${br(d[0])}</span><span>${esc(d[1])}</span></li>`).join("")}</ol>`:""}
+  <div class="owlbox ob-blue"><div class="owl">${'<svg viewBox="0 0 64 64" aria-hidden="true">'+OWL[2]+'</svg>'}</div><div class="t"><span class="h">Análise à luz do Manual</span>${c.leitura}</div></div>
+  <div class="acao"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg><div><b>Encaminhamento:</b> ${esc(c.acao)}</div></div>`;
+ desenharTL();
+}
+function desenharTL(){
+ const c=atualInfo,s=document.getElementById("tlsvg");if(!c||!s||!c.segs)return;
+ const W=s.clientWidth,H=s.clientHeight;if(!W)return;
+ const ini=new Date(c.segs[0][0]+"T12:00:00"),fim=new Date((c.status==="ATIVO"?"2026-11-24":c.segs[c.segs.length-1][1])+"T12:00:00");
+ const t0=new Date(ini.getFullYear(),ini.getMonth(),1),t1=new Date(fim.getFullYear(),fim.getMonth()+1,1);
+ const L=8,R=W-8,x=d=>L+(new Date(d+"T12:00:00")-t0)/(t1-t0)*(R-L);
+ const yB=20,hB=40;let g="";
+ c.segs.forEach(sg=>{const a=x(sg[0]),b=Math.max(x(sg[1]),a+1.5);g+=`<rect x="${a}" y="${yB}" width="${b-a}" height="${hB}" fill="${SCOR[sg[2]]}"><title>${SETN[sg[2]]}: ${br(sg[0])} a ${br(sg[1])} · ${fmt(sg[3])} dias</title></rect>`;
+  if(b-a>34)g+=`<text x="${(a+b)/2}" y="${yB+hB/2+4}" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" pointer-events="none">${sg[3]} d</text>`});
+ // eixo
+ const yA=yB+hB+18;g+=`<line x1="${L}" x2="${R}" y1="${yA-10}" y2="${yA-10}" stroke="#A5B1BA"/>`;
+ const meses=(t1.getFullYear()-t0.getFullYear())*12+t1.getMonth()-t0.getMonth();const passo=meses>30?6:meses>14?3:1;
+ for(let m=0;m<=meses;m++){const d=new Date(t0.getFullYear(),t0.getMonth()+m,1);const xx=L+(d-t0)/(t1-t0)*(R-L);const jan=d.getMonth()===0;
+  if(m%passo===0||jan){g+=`<line x1="${xx}" x2="${xx}" y1="${yA-14}" y2="${yA-6}" stroke="#A5B1BA"/>`;if(W>480||jan)g+=`<text x="${xx}" y="${yA+6}" font-size="11" text-anchor="middle" fill="${jan?"#283E4C":"#5b6573"}" font-weight="${jan?600:400}">${jan?d.getFullYear():["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"][d.getMonth()]}</text>`}}
+ // documentos
+ const yD=yA+28,lv=[];
+ c.docs.forEach((d,i)=>{const xx=x(d[0]);let k=0;while(lv[k]!==undefined&&xx-lv[k]<22)k++;lv[k]=xx;const yy=yD+k*24;
+  g+=`<g><title>${i+1}. ${br(d[0])} · ${esc(d[1])}</title><line x1="${xx}" x2="${xx}" y1="${yB+hB}" y2="${yy-9}" stroke="#283E4C" stroke-opacity=".25"/><circle cx="${xx}" cy="${yy}" r="9" fill="#fff" stroke="#283E4C" stroke-width="1.5"/><text x="${xx}" y="${yy+3.5}" font-size="10" text-anchor="middle" font-weight="600" fill="#283E4C">${i+1}</text></g>`});
+ const xh=x(c.status==="ATIVO"?"2026-11-24":c.segs[c.segs.length-1][1]);
+ g+=`<line x1="${xh}" x2="${xh}" y1="6" y2="${yB+hB+6}" stroke="#7A2632" stroke-width="1.5" stroke-dasharray="4 3"/><text x="${xh}" y="12" font-size="11" font-weight="600" fill="#7A2632" text-anchor="${xh>W-50?"end":"middle"}">${c.status==="ATIVO"?"hoje":"arquivado"}</text>`;
+ s.parentElement.style.height=(yD+lv.length*24+8)+"px";
+ s.innerHTML=g;
+}
+const roTL=new ResizeObserver(()=>desenharTL());roTL.observe(document.getElementById("info"));
+
+render();
+irPara((location.hash||"#panorama").slice(1));
+}
+</script>
+
+</body></html>
